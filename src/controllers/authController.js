@@ -22,6 +22,7 @@ exports.register = async (req, res) => {
             username,
             password: hashedPassword,
             phone,
+            
         });
 
         await newUser.save();
@@ -47,7 +48,7 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { phone, password } = req.body;
+        const { phone, password, role } = req.body;
 
         if (!phone || !password) {
             return res.status(400).json({ message: "All field required" })
@@ -65,7 +66,7 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user._id, phone: user.phone }, JWT_SECRET, { expiresIn: TOKEN_EXPIRES_IN }
+            { id: user._id, phone: user.phone, role: user.role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRES_IN }
         );
 
         res.status(200).json({
@@ -74,6 +75,7 @@ exports.login = async (req, res) => {
                 id: user._id,
                 username: user.username,
                 phone: user.phone,
+                role: role
             },
             token,
         });
