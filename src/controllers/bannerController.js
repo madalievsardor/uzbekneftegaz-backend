@@ -9,20 +9,30 @@ exports.create = async (req, res) => {
       return res.status(400).json({ message: "Fayl yuklanmadi" });
     }
 
-    const { title, description } = req.body;
+    const { title_uz, title_ru, title_kr, desc_uz, desc_ru, desc_kr } = req.body;
+    if(!title_uz) {
+      return res.status(400).json({message: "Sarlavha (Uz) mavburiy maydon"})
+    }
     const mediaType = req.file.mimetype.startsWith("image") ? "image" : "video";
-
     const newBanner = new bannerModel({
       file: req.file.filename,
-      title,
-      description,
+      title: {
+        uz: title_uz,
+        ru: title_ru,
+        kr: title_kr
+      },
+      description: {
+        uz: desc_uz,
+        ru: desc_ru,
+        kr: desc_kr
+      },
       mediaType,
     });
 
     await newBanner.save();
-    res.status(201).json({ message: "✅ Banner yaratildi", banner: newBanner });
+    res.status(201).json({ message: "Banner yaratildi", banner: newBanner });
   } catch (e) {
-    res.status(500).json({ message: "Server error", error: e.message });
+    res.status(500).json({ message: "Server xatosi", error: e.message });
   }
 };
 
@@ -32,7 +42,7 @@ exports.getAll = async (req, res) => {
     const banners = await bannerModel.find().sort({ createdAt: -1 });
     res.status(200).json(banners);
   } catch (e) {
-    res.status(500).json({ message: "Server error", error: e.message });
+    res.status(500).json({ message: "Server xatosi", error: e.message });
   }
 };
 
@@ -43,7 +53,7 @@ exports.getById = async (req, res) => {
     if (!banner) return res.status(404).json({ message: "Banner topilmadi" });
     res.status(200).json(banner);
   } catch (e) {
-    res.status(500).json({ message: "Server error", error: e.message });
+    res.status(500).json({ message: "Server xatosi", error: e.message });
   }
 };
 
@@ -60,7 +70,7 @@ exports.update = async (req, res) => {
       try {
         fs.unlinkSync(path.join("uploads", banner.file));
       } catch (err) {
-        console.warn("Old faylni o‘chirishda xatolik:", err.message);
+        console.warn("Oldingi faylni o‘chirishda xatolik:", err.message);
       }
 
       banner.file = req.file.filename;
@@ -72,7 +82,7 @@ exports.update = async (req, res) => {
 
     await banner.save();
 
-    res.status(200).json({ message: "🟠 Banner yangilandi", banner });
+    res.status(200).json({ message: "Banner yangilandi", banner });
   } catch (e) {
     res.status(500).json({ message: "Server error", error: e.message });
   }
@@ -93,8 +103,8 @@ exports.remove = async (req, res) => {
 
     await bannerModel.findByIdAndDelete(req.params.id);
 
-    res.status(200).json({ message: "🗑️ Banner o‘chirildi" });
+    res.status(200).json({ message: "Banner o‘chirildi" });
   } catch (e) {
-    res.status(500).json({ message: "Server error", error: e.message });
+    res.status(500).json({ message: "Server xatosi", error: e.message });
   }
 };

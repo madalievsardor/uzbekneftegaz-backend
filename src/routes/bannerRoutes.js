@@ -10,7 +10,6 @@ const {
   remove,
 } = require("../controllers/bannerController");
 
-
 /**
  * @swagger
  * tags:
@@ -22,7 +21,7 @@ const {
  * @swagger
  * /banner/upload:
  *   post:
- *     summary: Rasm yoki video yuklab yangi banner yaratish
+ *     summary: Rasm yoki video yuklab yangi banner yaratish (ko‘p tilda)
  *     tags: [Banner]
  *     requestBody:
  *       required: true
@@ -32,18 +31,30 @@ const {
  *             type: object
  *             required:
  *               - file
- *               - title
+ *               - title_uz
  *             properties:
  *               file:
  *                 type: string
  *                 format: binary
  *                 description: Rasm yoki video fayl
- *               title:
+ *               title_uz:
  *                 type: string
- *                 example: "Reklama banneri"
- *               description:
+ *                 example: "Reklama banneri (UZ)"
+ *               title_ru:
  *                 type: string
- *                 example: "Yangi aksiya uchun banner"
+ *                 example: "Рекламный баннер (RU)"
+ *               title_kr:
+ *                 type: string
+ *                 example: "Рекламный баннер (KR)"
+ *               desc_uz:
+ *                 type: string
+ *                 example: "Bu Uzbekcha tavsif"
+ *               desc_ru:
+ *                 type: string
+ *                 example: "Это описание на русском"
+ *               desc_kr:
+ *                 type: string
+ *                 example: "Бу кириллдаги тавсиф"
  *     responses:
  *       201:
  *         description: Banner muvaffaqiyatli yaratildi
@@ -114,10 +125,24 @@ router.get("/:id", getById);
  *               file:
  *                 type: string
  *                 format: binary
- *               title:
+ *               title[uz]:
  *                 type: string
- *               description:
+ *                 example: "Yangilangan banner"
+ *               title[ru]:
  *                 type: string
+ *                 example: "Обновленный баннер"
+ *               title[kr]:
+ *                 type: string
+ *                 example: "Янгиланган баннер"
+ *               description[uz]:
+ *                 type: string
+ *                 example: "Yangi ma’lumotlar bilan banner"
+ *               description[ru]:
+ *                 type: string
+ *                 example: "Баннер с новой информацией"
+ *               description[kr]:
+ *                 type: string
+ *                 example: "Янги маълумотлар билан баннер"
  *     responses:
  *       200:
  *         description: Banner muvaffaqiyatli yangilandi

@@ -8,12 +8,12 @@ exports.register = async (req, res) => {
         const { username, password, phone } = req.body;
 
         if (!username || !password || !phone) {
-            return res.status(400).json({ message: "All field required" })
+            return res.status(400).json({ message: "Barcha maydonlarni to‘ldirish shart!" })
         }
 
         const existisingUser = await userModel.findOne({ phone });
         if (existisingUser) {
-            return res.status(400).json({ message: "This number already registered" })
+            return res.status(400).json({ message: "Bu raqam allaqachon ro‘yxatdan o‘tgan!" })
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
         );
 
         res.status(201).json({
-            message: "User registered successfully",
+            message: "Foydalanuvchi muvaffaqiyatli ro‘yxatdan o‘tkazildi!",
             user: {
                 id: newUser._id,
                 username: newUser.username,
@@ -42,7 +42,7 @@ exports.register = async (req, res) => {
         })
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server error", error: err.message });
+        res.status(500).json({ message: "Server xatosi!", error: err.message });
     }
 }
 
@@ -51,18 +51,18 @@ exports.login = async (req, res) => {
         const { phone, password, role } = req.body;
 
         if (!phone || !password) {
-            return res.status(400).json({ message: "All field required" })
+            return res.status(400).json({ message: "Barcha maydonlarni to‘ldirish shart!" })
         }
 
         const user = await userModel.findOne({ phone });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found " })
+            return res.status(404).json({ message: "Bunday foydalanuvchi topilmadi!" })
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid password" })
+            return res.status(400).json({ message: "Parol noto‘g‘ri!" })
         }
 
         const token = jwt.sign(
@@ -70,7 +70,7 @@ exports.login = async (req, res) => {
         );
 
         res.status(200).json({
-            message: "Login successful",
+            message: "Tizimga muvaffaqiyatli kirdingiz!",
             user: {
                 id: user._id,
                 username: user.username,
@@ -80,7 +80,7 @@ exports.login = async (req, res) => {
             token,
         });
     } catch (e) {
-        console.log("Server error")
+        console.log("Server xatosi", e)
         res.status(500).json({ message: "Server error", error: e.message })
     }
 }
@@ -88,9 +88,9 @@ exports.login = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
     try{
         const users = await userModel.find();
-        res.status(200).json({message: "All users", users})
+        res.status(200).json({message: "Barcha foydalanuvchilar ro‘yxati", users})
     } catch(e) {
-         res.status(500).json({message: "Server error"})
+         res.status(500).json({message: "Server xatosi!"})
     }
 }
 
@@ -101,12 +101,12 @@ exports.deleteUser = async (req, res) => {
         const deletedUser = await userModel.findByIdAndDelete(id);
 
         if (!deletedUser) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "Foydalanuvchi topilmadi!" });
         }
 
-        res.status(200).json({ message: "User deleted successfully" });
+        res.status(200).json({ message: "Foydalanuvchi muvaffaqiyatli o‘chirildi!" });
     } catch (err) {
-        res.status(500).json({ message: "Server error", error: err.message });
+        res.status(500).json({ message: "Server xatosi!", error: err.message });
     }
 };
 
