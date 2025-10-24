@@ -56,8 +56,6 @@ pids
 *.pid.lock
 
 # Uploads or user files
-uploads/
-public/uploads/
 temp/
 tmp/
 
