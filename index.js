@@ -2,49 +2,44 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const path = require("path");
-const app = express();
 
+const app = express();
 const PORT = process.env.PORT || 8000;
-const connectDB = require("./src/config/db");
-const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
+
+// Routes
 const authRoutes = require("./src/routes/authRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
+const connectDB = require("./src/config/db");
+const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
+// 🔹 Databasega ulanish
 connectDB();
 
-// ✅ Universal CORS (Render va Local uchun)
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173", // Local frontend
-      "http://localhost:8000", // Local API
-      "https://uzbekneftegaz-backend.onrender.com", // Render backend
-      "https://uzbekneftegaz-frontend.onrender.com", // agar frontend Renderda bo‘lsa
-      "*",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// 🔹 CORS — har qanday domen uchun ruxsat (productionda xohlasang aniq domen bilan cheklash mumkin)
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-// ✅ Middleware
 app.use(express.json());
 
-// ✅ Swagger
+// 🔹 Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// ✅ Routes
+// 🔹 API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/banner", bannerRoutes);
 
-// ✅ Static fayllar (uploads)
+// 🔹 Statik fayllar (rasmlar uchun)
 app.use("/uploads", express.static(path.join(__dirname, "src", "uploads")));
 
-// ✅ Test route
-app.get("/", (req, res) => res.send("✅ UzbekNeftegaz backend ishlayapti!"));
+// 🔹 Root endpoint
+app.get("/", (req, res) => {
+  res.send("✅ Server running");
+});
 
-// ✅ Serverni ishga tushurish
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`✅ Server running on http://localhost:${PORT}`);
   console.log(`📘 Swagger docs: http://localhost:${PORT}/api-docs`);
 });
