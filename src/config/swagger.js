@@ -1,24 +1,18 @@
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-const BASE_URL =
-  process.env.RENDER_EXTERNAL_URL || "http://localhost:8000"; // Render uchun avtomatik aniqlaydi
-
 const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "UzbekNeftegaz API",
+      title: "Auth API",
       version: "1.0.0",
-      description:
-        "📘 UzbekNeftegaz loyihasi uchun backend API hujjatlari (Auth, Banner va boshqalar)",
+      description: "User authentication API documentation with Express and Swagger",
     },
     servers: [
       {
-        url: `${BASE_URL}/api`,
-        description: process.env.RENDER_EXTERNAL_URL
-          ? "Render (production) server"
-          : "Local server",
+        url: "http://localhost:8000/api",
+        description: "Local server",
       },
     ],
     components: {
@@ -27,7 +21,7 @@ const options = {
           type: "http",
           scheme: "bearer",
           bearerFormat: "JWT",
-          description: "🔐 JWT token kiriting (Bearer token formatida)",
+          description: "Foydalanuvchi tokenini kiriting",
         },
       },
     },
@@ -43,3 +37,4 @@ const options = {
 const swaggerSpec = swaggerJsDoc(options);
 
 module.exports = { swaggerUi, swaggerSpec };
+ 
