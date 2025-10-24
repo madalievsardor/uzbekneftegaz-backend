@@ -9,7 +9,7 @@ exports.create = async (req, res) => {
       return res.status(400).json({ message: "Fayl yuklanmadi" });
     }
 
-    const { title_uz, title_ru, title_kr, desc_uz, desc_ru, desc_kr } = req.body;
+    const { title_uz, title_ru, title_oz, desc_uz, desc_ru, desc_oz } = req.body;
     if(!title_uz) {
       return res.status(400).json({message: "Sarlavha (Uz) mavburiy maydon"})
     }
@@ -19,12 +19,12 @@ exports.create = async (req, res) => {
       title: {
         uz: title_uz,
         ru: title_ru,
-        kr: title_kr
+        oz: title_oz
       },
       description: {
         uz: desc_uz,
         ru: desc_ru,
-        kr: desc_kr
+        oz: desc_oz
       },
       mediaType,
     });
