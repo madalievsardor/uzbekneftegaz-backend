@@ -1,8 +1,9 @@
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-const SERVER_URL =
-  process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 8000}/api`;
+// 🔹 Local va Production URL-larni tayyorlaymiz
+const LOCAL_URL = `http://localhost:${process.env.PORT || 8000}/api`;
+const PROD_URL = `${process.env.RENDER_EXTERNAL_URL || "https://uzbekneftegaz-backend.onrender.com"}/api`;
 
 const options = {
   definition: {
@@ -10,12 +11,16 @@ const options = {
     info: {
       title: "Uzbekneftegaz API",
       version: "1.0.0",
-      description: "Foydalanuvchi autentifikatsiyasi va banner boshqaruvi uchun API hujjati",
+      description: "Auth va Banner API hujjati (Express + Swagger)",
     },
     servers: [
       {
-        url: SERVER_URL,
-        description: "Auto-configured server (local yoki production)",
+        url: LOCAL_URL,
+        description: "💻 Local server (localhost)",
+      },
+      {
+        url: PROD_URL,
+        description: "☁️ Render production server",
       },
     ],
     components: {
@@ -34,9 +39,8 @@ const options = {
       },
     ],
   },
-  apis: ["./src/routes/*.js"],
+  apis: ["./src/routes/*.js"], // Swagger kommentlar shu fayllarda bo‘ladi
 };
 
 const swaggerSpec = swaggerJsDoc(options);
-
 module.exports = { swaggerUi, swaggerSpec };
