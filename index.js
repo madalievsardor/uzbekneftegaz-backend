@@ -9,13 +9,14 @@ const PORT = process.env.PORT || 8000;
 // Routes
 const authRoutes = require("./src/routes/authRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
+const leaderRoutes = require("./src/routes/leaderRoutes")
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
-// 🔹 Databasega ulanish
+// DB
 connectDB();
 
-// 🔹 CORS — har qanday domen uchun ruxsat (productionda xohlasang aniq domen bilan cheklash mumkin)
+// CORS
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -24,22 +25,23 @@ app.use(cors({
 
 app.use(express.json());
 
-// 🔹 Swagger docs
+// Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// 🔹 API routes
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/banner", bannerRoutes);
-
-// 🔹 Statik fayllar (rasmlar uchun)
+app.use("/api/leaders", leaderRoutes)
+// Statik fayllar
 app.use("/uploads", express.static(path.join(__dirname, "src", "uploads")));
 
-// 🔹 Root endpoint
+// Root
 app.get("/", (req, res) => {
-  res.send("✅ Server running");
+  res.send("✅ Uzbekneftegaz Backend ishlayapti 🚀");
 });
 
+// Port
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
   console.log(`📘 Swagger docs: http://localhost:${PORT}/api-docs`);
 });

@@ -1,9 +1,8 @@
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-// 🔹 Local va Production URL-larni tayyorlaymiz
 const LOCAL_URL = `http://localhost:${process.env.PORT || 8000}/api`;
-const PROD_URL = `${process.env.RENDER_EXTERNAL_URL || "https://uzbekneftegaz-backend.onrender.com"}/api`;
+const PROD_URL = `${process.env.RAILWAY_URL || "https://uzbekneftegaz-backend-production.up.railway.app"}/api`;
 
 const options = {
   definition: {
@@ -20,7 +19,7 @@ const options = {
       },
       {
         url: PROD_URL,
-        description: "☁️ Render production server",
+        description: "☁️ Railway production server",
       },
     ],
     components: {
@@ -39,7 +38,7 @@ const options = {
       },
     ],
   },
-  apis: ["./src/routes/*.js"], // Swagger kommentlar shu fayllarda bo‘ladi
+  apis: ["./src/routes/*.js"],
 };
 
 const swaggerSpec = swaggerJsDoc(options);

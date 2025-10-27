@@ -40,7 +40,7 @@ exports.create = async (req, res) => {
 exports.getAll = async (req, res) => {
   try {
     const banners = await bannerModel.find().sort({ createdAt: -1 });
-    res.status(200).json(banners);
+    res.status(200).json({message: "All users", banners});
   } catch (e) {
     res.status(500).json({ message: "Server xatosi", error: e.message });
   }
@@ -94,7 +94,6 @@ exports.remove = async (req, res) => {
     const banner = await bannerModel.findById(req.params.id);
     if (!banner) return res.status(404).json({ message: "Banner topilmadi" });
 
-    // Faylni uploads papkasidan o‘chir
     try {
       fs.unlinkSync(path.join("uploads", banner.file));
     } catch (err) {

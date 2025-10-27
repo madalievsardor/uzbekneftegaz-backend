@@ -63,7 +63,7 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/upload", verifyToken, upload.single("file"), create);
+router.post("/upload", verifyToken,  upload.single("file"), create);
 
 /**
  * @swagger

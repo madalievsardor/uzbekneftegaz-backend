@@ -2,16 +2,17 @@ const mongoose = require("mongoose");
 
 const bannerSchema = new mongoose.Schema(
     {
-        file: { type: String, required: true },
+        file: { type: String, required: true }, // Cloudinary URL
+        public_id: { type: String }, // 🔹 Cloudinary ID — o‘chirish uchun kerak
         title: {
             uz: { type: String, required: true },
-            ru: { type: String, required: false },
-            kr: { type: String, required: false }
+            ru: { type: String },
+            oz: { type: String }, // 🔹 kr o‘rniga oz (o‘zbek lotincha)
         },
         description: {
-            uz: { type: String, required: false },
-            ru: { type: String, required: false },
-            oz: { type: String, required: false }
+            uz: { type: String },
+            ru: { type: String },
+            oz: { type: String },
         },
         mediaType: {
             type: String,
