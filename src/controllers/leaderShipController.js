@@ -44,7 +44,7 @@ exports.remove = async (req, res) => {
             return res.status(404).json({message: "Rahbar topilmadi."})
         }
         await leaderShipModel.findByIdAndDelete(req.params.id)
-        res.status(200).json({message: "Rahbar muvafaqiyatli o'chirildi", leader})
+        res.status(200).json({message: "Rahbar muvafaqiyatli o'chirildi"})
     } catch(e){
         res.status(500).json({message: "Serverda xatolik"})
     }

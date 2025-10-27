@@ -150,5 +150,51 @@ router.post("/", verifyToken, create);
  */
 router.get("/",  getAllLeader);
 
+/**
+ * @swagger
+ * /leaders/{id}:
+ *   delete:
+ *     summary: ID orqali rahbarni o‘chirish
+ *     tags: [Leadership]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Rahbarning ObjectID
+ *     responses:
+ *       200:
+ *         description: Rahbar muvaffaqiyatli o‘chirildi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Rahbar muvaffaqiyatli o'chirildi"
+ *                 leader:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: "64f7896b78bdb0c334dcb650"
+ *                     fullName:
+ *                       type: string
+ *                       example: "Ali Valiyev"
+ *                     grade:
+ *                       type: string
+ *                       example: "Manager"
+ *       404:
+ *         description: Rahbar topilmadi
+ *       500:
+ *         description: Server xatosi
+ */
+router.delete("/:id", verifyToken, remove);
+
+
 
 module.exports = router;
