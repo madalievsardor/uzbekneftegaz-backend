@@ -2,7 +2,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
 const LOCAL_URL = `http://localhost:${process.env.PORT || 8000}/api`;
-const PROD_URL = `${process.env.RAILWAY_URL || "https://uzbekneftegaz-backend-production.up.railway.app"}/api`;
+const PROD_URL = `${process.env.RENDER_EXTERNAL_URL || LOCAL_URL}/api`;
 
 const options = {
   definition: {
@@ -10,7 +10,7 @@ const options = {
     info: {
       title: "Uzbekneftegaz API",
       version: "1.0.0",
-      description: "Auth va Banner API hujjati (Express + Swagger)",
+      description: "Auth, Banner va Leadership API hujjati (Express + Swagger)",
     },
     servers: [
       {
@@ -19,8 +19,8 @@ const options = {
       },
       {
         url: PROD_URL,
-        description: "☁️ Railway production server",
-      },
+        description: "🌐 Production server (Render)",
+      }
     ],
     components: {
       securitySchemes: {
@@ -38,8 +38,9 @@ const options = {
       },
     ],
   },
-  apis: ["./src/routes/*.js"],
+  apis: ["./src/routes/*.js"], // swagger doc fayllaringiz
 };
 
 const swaggerSpec = swaggerJsDoc(options);
+
 module.exports = { swaggerUi, swaggerSpec };
