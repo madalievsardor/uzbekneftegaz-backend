@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 8000;
 // Routes
 const authRoutes = require("./src/routes/authRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
-const leaderRoutes = require("./src/routes/leaderRoutes")
+const leaderRoutes = require("./src/routes/leaderRoutes");
+const vacancyRoutes = require("./src/routes/vacancyRoutes")
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
@@ -31,9 +32,11 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/banner", bannerRoutes);
-app.use("/api/leaders", leaderRoutes)
+app.use("/api/leader", leaderRoutes);
+app.use("/api/vacancy", vacancyRoutes)
 // Statik fayllar
 app.use("/uploads", express.static(path.join(__dirname, "src", "uploads")));
+app.use("/assets", express.static(path.join(__dirname, "src/assets/images")));
 
 // Root
 app.get("/", (req, res) => {

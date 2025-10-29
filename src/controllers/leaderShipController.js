@@ -49,3 +49,29 @@ exports.remove = async (req, res) => {
         res.status(500).json({message: "Serverda xatolik"})
     }
 }
+
+exports.update = async (req, res) => {
+    try{
+        const {fullName, grade, phone, email, avatar, workDays, workHours, description} = req.body;
+
+        const leader = await leaderShipModel.findById(req.params.id);
+        if(!leader) {
+            return res.status(404).json({message: "Rahbar topilmadi!"})
+        }
+        if(fullName) leader.fullName = fullName;
+        if(grade) leader.grade = grade;
+        if(phone) leader.phone = phone;
+        if(email) leader.email = email;
+        if(avatar) leader.avatar = avatar;
+        if(workDays) leader.workDays = workDays;
+        if(workHours) leader.workHours = workHours;
+        if(description) leader.description = description;
+
+        await leader.save();
+
+        res.status(200).json({message: "Rahbar muvafaqaiyatli yangilandi,", leader})
+    }catch(e) {
+        console.log(e)
+        res.status(500).json({message: "Serverda xatolik", error: e.message})
+    }
+}

@@ -1,27 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../middleware/authMiddleware");
 const {
   create,
   getAllLeader,
-  getById,
   update,
   remove,
 } = require("../controllers/leaderShipController");
-
+const { verifyToken } = require("../middleware/authMiddleware")
 /**
  * @swagger
  * tags:
- *   name: Leadership
- *   description: Rahbarlar CRUD API
+ *   name: Leader
+ *   description: Рахбарлар (уз, оз, ру тилларда)
  */
 
 /**
  * @swagger
- * /leaders:
+ * /leader:
  *   post:
- *     summary: Yangi rahbar yaratish
- *     tags: [Leadership]
+ *     summary: Янги раҳбар қўшиш (ўзбек, кирилл ва рус тилларида)
+ *     tags: [Leader]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -30,34 +28,52 @@ const {
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - fullName
- *               - grade
- *               - phone
- *               - email
- *               - workDays
- *               - workHours
  *             properties:
  *               fullName:
- *                 type: string
- *                 example: "Ali Valiyev"
+ *                 type: object
+ *                 properties:
+ *                   uz:
+ *                     type: string
+ *                     example: "Aliyev Azizbek"
+ *                   oz:
+ *                     type: string
+ *                     example: "Алиев Азизбек"
+ *                   ru:
+ *                     type: string
+ *                     example: "Алиев Азизбек"
  *               grade:
- *                 type: string
- *                 example: "Manager"
+ *                 type: object
+ *                 properties:
+ *                   uz:
+ *                     type: string
+ *                     example: "Direktor"
+ *                   oz:
+ *                     type: string
+ *                     example: "Директор"
+ *                   ru:
+ *                     type: string
+ *                     example: "Директор"
  *               phone:
  *                 type: string
- *                 example: "998901234567"
+ *                 example: "+998900112233"
  *               email:
  *                 type: string
- *                 example: "ali@mail.com"
+ *                 example: "azizbek@mail.com"
  *               avatar:
  *                 type: string
- *                 example: "https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
+ *                 example: "https://example.com/avatar.jpg"
  *               workDays:
- *                 type: array
- *                 items:
- *                   type: string
- *                 example: ["Dushanba", "Chorshanba", "Juma"]
+ *                 type: object
+ *                 properties:
+ *                   uz:
+ *                     type: string
+ *                     example: "Dushanba - Juma"
+ *                   oz:
+ *                     type: string
+ *                     example: "Душанба - Жума"
+ *                   ru:
+ *                     type: string
+ *                     example: "Понедельник - Пятница"
  *               workHours:
  *                 type: object
  *                 properties:
@@ -68,133 +84,159 @@ const {
  *                     type: string
  *                     example: "18:00"
  *               description:
- *                 type: string
- *                 example: "Rahbar haqida qo‘shimcha ma’lumot"
+ *                 type: object
+ *                 properties:
+ *                   uz:
+ *                     type: string
+ *                     example: "10 yillik tajribaga ega rahbar."
+ *                   oz:
+ *                     type: string
+ *                     example: "10 йиллик тажрибага эга раҳбар."
+ *                   ru:
+ *                     type: string
+ *                     example: "Руководитель с 10-летним опытом."
  *     responses:
  *       201:
- *         description: Rahbar muvaffaqiyatli yaratildi
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Rahbar muvafaqiyatli qo'shildi."
+ *         description: Раҳбар муваффақиятли қўшилди
  *       400:
- *         description: Barcha maydonlar to'ldirilishi shart
+ *         description: Мажбурий майдонлар тўлдирилмаган
  *       500:
- *         description: Server xatosi
+ *         description: Серверда хатолик
  */
-
 router.post("/", verifyToken, create);
 
 /**
  * @swagger
- * /leaders:
+ * /leader:
  *   get:
- *     summary: Barcha rahbarlarni olish
- *     tags: [Leadership]
- *     security:
- *       - bearerAuth: []
+ *     summary: Барча раҳбарларни олиш
+ *     tags: [Leader]
  *     responses:
  *       200:
- *         description: Rahbarlar ro'yxati
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 leaders:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                         example: "64f7896b78bdb0c334dcb650"
- *                       fullName:
- *                         type: string
- *                         example: "Ali Valiyev"
- *                       grade:
- *                         type: string
- *                         example: "Manager"
- *                       phone:
- *                         type: string
- *                         example: "998901234567"
- *                       email:
- *                         type: string
- *                         example: "ali@mail.com"
- *                       avatar:
- *                         type: string
- *                         example: "https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
- *                       workDays:
- *                         type: array
- *                         items:
- *                           type: string
- *                         example: ["Dushanba", "Chorshanba", "Juma"]
- *                       workHours:
- *                         type: object
- *                         properties:
- *                           start:
- *                             type: string
- *                             example: "09:00"
- *                           end:
- *                             type: string
- *                             example: "18:00"
- *                       description:
- *                         type: string
- *                         example: "Rahbar haqida qo‘shimcha ma’lumot"
- *       500:
- *         description: Server xatosi
+ *         description: Барча раҳбарлар рўйхати
  */
-router.get("/",  getAllLeader);
+router.get("/", getAllLeader);
+
+
+
 
 /**
  * @swagger
- * /leaders/{id}:
- *   delete:
- *     summary: ID orqali rahbarni o‘chirish
- *     tags: [Leadership]
+ * /leader/update/{id}:
+ *   put:
+ *     summary: Раҳбар маълумотларини янгилаш (ўзбек, кирилл ва рус тилларида)
+ *     tags: [Leader]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Янгиланадиган раҳбарнинг ID си
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName:
+ *                 type: object
+ *                 properties:
+ *                   uz:
+ *                     type: string
+ *                     example: "Aliyev Azizbek"
+ *                   oz:
+ *                     type: string
+ *                     example: "Алиев Азизбек"
+ *                   ru:
+ *                     type: string
+ *                     example: "Алиев Азизбек"
+ *               grade:
+ *                 type: object
+ *                 properties:
+ *                   uz:
+ *                     type: string
+ *                     example: "Direktor o‘rinbosari"
+ *                   oz:
+ *                     type: string
+ *                     example: "Директор ўринбосари"
+ *                   ru:
+ *                     type: string
+ *                     example: "Заместитель директора"
+ *               phone:
+ *                 type: string
+ *                 example: "+998901234567"
+ *               email:
+ *                 type: string
+ *                 example: "azizbek_updated@mail.com"
+ *               avatar:
+ *                 type: string
+ *                 example: "https://example.com/avatar_updated.jpg"
+ *               workDays:
+ *                 type: object
+ *                 properties:
+ *                   uz:
+ *                     type: string
+ *                     example: "Dushanba - Shanba"
+ *                   oz:
+ *                     type: string
+ *                     example: "Душанба - Шанба"
+ *                   ru:
+ *                     type: string
+ *                     example: "Понедельник - Суббота"
+ *               workHours:
+ *                 type: object
+ *                 properties:
+ *                   start:
+ *                     type: string
+ *                     example: "08:00"
+ *                   end:
+ *                     type: string
+ *                     example: "17:00"
+ *               description:
+ *                 type: object
+ *                 properties:
+ *                   uz:
+ *                     type: string
+ *                     example: "Yangilangan lavozimga tayinlandi."
+ *                   oz:
+ *                     type: string
+ *                     example: "Янгиланган лавозимга тайинланди."
+ *                   ru:
+ *                     type: string
+ *                     example: "Назначен на новую должность."
+ *     responses:
+ *       200:
+ *         description: Раҳбар маълумотлари муваффақиятли янгиланди
+ *       404:
+ *         description: Раҳбар топилмади
+ *       500:
+ *         description: Серверда хатолик
+ */
+router.put("/update/:id", verifyToken, update);
+
+
+/**
+ * @swagger
+ * /leader/{id}:
+ *   delete:
+ *     summary: Раҳбарни ўчириш
+ *     tags: [Leader]
+ *     parameters:
+ *       - name: id
+ *         in: path
  *         required: true
  *         schema:
  *           type: string
- *         description: Rahbarning ObjectID
  *     responses:
  *       200:
- *         description: Rahbar muvaffaqiyatli o‘chirildi
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Rahbar muvaffaqiyatli o'chirildi"
- *                 leader:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                       example: "64f7896b78bdb0c334dcb650"
- *                     fullName:
- *                       type: string
- *                       example: "Ali Valiyev"
- *                     grade:
- *                       type: string
- *                       example: "Manager"
+ *         description: Раҳбар ўчирилди
  *       404:
- *         description: Rahbar topilmadi
- *       500:
- *         description: Server xatosi
+ *         description: Раҳбар топилмади
  */
 router.delete("/:id", verifyToken, remove);
-
-
 
 module.exports = router;

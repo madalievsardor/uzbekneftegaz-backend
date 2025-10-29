@@ -1,23 +1,32 @@
 const mongoose = require("mongoose");
 
 const leaderShipSchema = new mongoose.Schema({
-    fullName: { type: String, required: true },
-    grade: { type: String, required: true },
+    fullName: {
+        uz: { type: String, required: true },
+        oz: { type: String, required: true },
+        ru: { type: String, required: true }
+    },
+    grade: {
+        uz: { type: String, required: true },
+        oz: { type: String, required: true },
+        ru: { type: String, required: true }
+    },
     phone: { type: String, required: true },
     email: { type: String, required: false },
     avatar: {
         type: String,
-        default: "https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
+        default: "/assets/leader.png"
     },
     workDays: {
-        type: [String],
-        required: true
+        uz: { type: String, required: true, example: "Dushanba - Juma" },
+        oz: { type: String, required: true, example: "Душанба - Жума" },
+        ru: { type: String, required: true, example: "Понедельник - Пятница" }
     },
     workHours: {
         start: {
             type: String,
             required: true,
-            match: /^([0-1]\d|2[0-3]):([0-5]\d)$/, // HH:mm format
+            match: /^([0-1]\d|2[0-3]):([0-5]\d)$/,
             example: "09:00"
         },
         end: {
@@ -27,7 +36,11 @@ const leaderShipSchema = new mongoose.Schema({
             example: "18:00"
         }
     },
-    description: { type: String, required: false }
+    description: {
+        uz: { type: String, required: false },
+        oz: { type: String, required: false },
+        ru: { type: String, required: false }
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Leadership", leaderShipSchema);
