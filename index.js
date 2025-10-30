@@ -11,6 +11,7 @@ const authRoutes = require("./src/routes/authRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
 const leaderRoutes = require("./src/routes/leaderRoutes");
 const vacancyRoutes = require("./src/routes/vacancyRoutes")
+const normativRoutes = require("./src/routes/normativeRoutes")
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
@@ -34,6 +35,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/banner", bannerRoutes);
 app.use("/api/leader", leaderRoutes);
 app.use("/api/vacancy", vacancyRoutes)
+app.use("/api/normative", normativRoutes)
 // Statik fayllar
 app.use("/uploads", express.static(path.join(__dirname, "src", "uploads")));
 app.use("/assets", express.static(path.join(__dirname, "src/assets/images")));
