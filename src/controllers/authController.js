@@ -121,6 +121,18 @@ exports.getAllUsers = async (req, res) => {
     }
 }
 
+exports.getById = async (req, res) => {
+    try{
+        const user = await userModel.findById(req.params.id);
+        if(!user) {
+            return res.status(404).json({message: "Foydalanuvchi topilmadi."});
+        }
+        res.status(200).json({user})
+    }catch(e) {
+        res.status(500).json({message: "Serverda xatolik", error: e.message})
+    }
+}
+
 exports.deleteUser = async (req, res) => {
     try {
         const { id } = req.params;

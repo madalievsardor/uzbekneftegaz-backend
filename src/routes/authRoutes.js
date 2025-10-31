@@ -1,6 +1,6 @@
 const express = require("express");
 const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
-const { register, login, getAllUsers, deleteUser } = require("../controllers/authController");
+const { register, login, getAllUsers, deleteUser, getById } = require("../controllers/authController");
 const router = express.Router();
 
 /**
@@ -70,6 +70,45 @@ router.post("/register", register);
  *         description: User not found
  */
 router.post("/login", login);
+
+/**
+ * @swagger
+ * /auth/{id}:
+ *   get:
+ *     summary: Foydalanuvchini ID orqali olish
+ *     description: Berilgan ID bo‘yicha foydalanuvchi ma’lumotlarini qaytaradi.
+ *     tags:
+ *       - Auth
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Foydalanuvchi ID-si (MongoDB ObjectId)
+ *     responses:
+ *       200:
+ *         description: Foydalanuvchi topildi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   example:
+ *                     _id: 671f5b2dc05a2b3c8c4f78e9
+ *                     name: Sardor Madaliyev
+ *                     email: sardor@example.com
+ *       404:
+ *         description: Foydalanuvchi topilmadi
+ *       500:
+ *         description: Server xatoligi
+ */
+router.get("/:id", verifyToken, getById);
+
 
 /**
  * @swagger
