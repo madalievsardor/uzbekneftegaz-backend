@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middleware/upload");
-const controller = require("../controllers/normativeController");
+const { verifyToken } = require("../middleware/authMiddleware")
+const upload = require("../middleware/upload"); // multer fayl yuklash middleware
+const normativeDocumentController = require("../controllers/normativeController");
 
 /**
  * @swagger
  * tags:
  *   name: NormativeDocument
- *   description: Normativ-huquqiy hujjatlar uchun CRUD API
+ *   description: 🧾 Normativ hujjatlar uchun CRUD API
  */
 
 /**
@@ -22,72 +23,122 @@ const controller = require("../controllers/normativeController");
  *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required:
+ *               - file
+ *               - title_uz
+ *               - decree_uz
+ *               - description_uz
  *             properties:
- *               title:
- *                 type: string
- *                 example: "Davlat qarori"
- *               decree:
- *                 type: string
- *                 example: "PQ-1234"
- *               description:
- *                 type: string
- *                 example: "Bu qaror davlat boshqaruvi tizimini takomillashtirishga oid."
  *               file:
  *                 type: string
  *                 format: binary
- *                 description: "PDF, DOCX yoki ZIP fayl"
+ *                 description: Yuklanadigan PDF, DOC yoki ZIP fayl
+ *               # -----------------------------
+ *               # 🏷️ Sarlavha (title)
+ *               # -----------------------------
+ *               title_uz:
+ *                 type: string
+ *                 description: Hujjat nomi (O‘zbekcha)
+ *                 example: "Qaror to‘g‘risida"
+ *               title_ru:
+ *                 type: string
+ *                 description: Hujjat nomi (Ruscha)
+ *                 example: "О постановлении"
+ *               title_oz:
+ *                 type: string
+ *                 description: Hujjat nomi (Lotincha)
+ *                 example: "Qaror haqida"
+ *               # -----------------------------
+ *               # 📜 Qaror raqami (decree)
+ *               # -----------------------------
+ *               decree_uz:
+ *                 type: string
+ *                 description: Qaror yoki farmon raqami (O‘zbekcha)
+ *                 example: "123-sonli qaror"
+ *               decree_ru:
+ *                 type: string
+ *                 description: Qaror yoki farmon raqami (Ruscha)
+ *                 example: "Постановление №123"
+ *               decree_oz:
+ *                 type: string
+ *                 description: Qaror yoki farmon raqami (Lotincha)
+ *                 example: "123-son qaror"
+ *               # -----------------------------
+ *               # 🧾 Tavsif (description)
+ *               # -----------------------------
+ *               description_uz:
+ *                 type: string
+ *                 description: Tavsif (O‘zbekcha)
+ *                 example: "Ushbu qaror moliya sohasiga taalluqlidir."
+ *               description_ru:
+ *                 type: string
+ *                 description: Tavsif (Ruscha)
+ *                 example: "Это постановление связано с финансовым сектором."
+ *               description_oz:
+ *                 type: string
+ *                 description: Tavsif (Lotincha)
+ *                 example: "Bu qaror moliya sohasi haqida."
  *     responses:
  *       201:
  *         description: Hujjat muvaffaqiyatli yaratildi
  *       400:
- *         description: Fayl yoki maydonlar kiritilmagan
+ *         description: Noto‘g‘ri maʼlumot kiritilgan
+ *       500:
+ *         description: Serverda xatolik
  */
-router.post("/create", upload.single("file"), controller.create);
+router.post(
+  "/create", verifyToken,
+  upload.single("file"),
+  normativeDocumentController.create
+);
+
 
 /**
  * @swagger
- * /normative:
+ * /normative/all:
  *   get:
  *     summary: Barcha normativ hujjatlarni olish
  *     tags: [NormativeDocument]
  *     responses:
  *       200:
- *         description: Barcha hujjatlar ro‘yxati
+ *         description: Hamma hujjatlar ro‘yxati
+ *       500:
+ *         description: Server xatosi
  */
-router.get("/", controller.getAll);
+router.get("/all", normativeDocumentController.getAll);
 
 /**
  * @swagger
  * /normative/{id}:
  *   get:
- *     summary: ID bo‘yicha bitta normativ hujjatni olish
+ *     summary: ID orqali bitta normativ hujjatni olish
  *     tags: [NormativeDocument]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: Hujjatning ID raqami
+ *         description: Hujjat ID si
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Topilgan hujjat
+ *         description: Hujjat maʼlumotlari
  *       404:
  *         description: Hujjat topilmadi
  */
-router.get("/:id", controller.getById);
+router.get("/:id", normativeDocumentController.getById);
 
 /**
  * @swagger
  * /normative/update/{id}:
  *   put:
- *     summary: Normativ hujjatni yangilash (fayl ixtiyoriy)
+ *     summary: Normativ hujjatni yangilash (fayl majburiy emas)
  *     tags: [NormativeDocument]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: Yangilanadigan hujjat ID si
+ *         description: Yangilanayotgan hujjat ID si
  *         schema:
  *           type: string
  *     requestBody:
@@ -97,32 +148,36 @@ router.get("/:id", controller.getById);
  *           schema:
  *             type: object
  *             properties:
- *               title:
- *                 type: string
- *                 example: "Yangilangan qaror nomi"
- *               decree:
- *                 type: string
- *                 example: "PQ-9999"
- *               description:
- *                 type: string
- *                 example: "Yangilangan hujjat mazmuni"
  *               file:
  *                 type: string
  *                 format: binary
- *                 description: "Yangi fayl (ixtiyoriy)"
+ *                 description: Yangi yuklanadigan fayl
+ *               title:
+ *                 type: string
+ *                 description: JSON formatda — {"uz":"...", "ru":"...", "oz":"..."}
+ *               decree:
+ *                 type: string
+ *               description:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Hujjat muvaffaqiyatli yangilandi
+ *         description: Hujjat yangilandi
  *       404:
  *         description: Hujjat topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.put("/update/:id", upload.single("file"), controller.update);
+router.put(
+  "/update/:id", verifyToken,
+  upload.single("file"),
+  normativeDocumentController.update
+);
 
 /**
  * @swagger
  * /normative/delete/{id}:
  *   delete:
- *     summary: Normativ hujjatni o‘chirish
+ *     summary: Hujjatni o‘chirish
  *     tags: [NormativeDocument]
  *     parameters:
  *       - name: id
@@ -136,7 +191,9 @@ router.put("/update/:id", upload.single("file"), controller.update);
  *         description: Hujjat muvaffaqiyatli o‘chirildi
  *       404:
  *         description: Hujjat topilmadi
+ *       500:
+ *         description: Server xatosi
  */
-router.delete("/delete/:id", controller.remove);
+router.delete("/delete/:id", verifyToken, normativeDocumentController.remove);
 
 module.exports = router;

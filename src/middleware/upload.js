@@ -15,6 +15,10 @@ const storage = multer.diskStorage({
     else if (req.baseUrl.includes("/normative")) {
       folderPath = path.join(__dirname, "../uploads/files");
     }
+    // 🔹 Faxriy xodimlar (honorary)
+    else if (req.baseUrl.includes("/honorary")) {
+      folderPath = path.join(__dirname, "../uploads/honorary");
+    }
     // 🔹 Default (boshqa endpointlar)
     else {
       folderPath = path.join(__dirname, "../uploads/others");

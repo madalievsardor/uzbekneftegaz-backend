@@ -2,11 +2,31 @@ const mongoose = require("mongoose");
 
 const normativeDocumentSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true }, // Hujjat nomi
-    decree: { type: String, required: true }, // Qaror yoki farmon raqami
-    description: { type: String, required: true},
-    file: { type: String, required: true }, // Yuklangan fayl nomi (PDF, DOCX, ZIP va h.k.)
-    fileType: { type: String, default: "application/pdf" }, // Fayl turi (mimetype)
+    // 🏷️ Hujjat nomi (ko‘p tilda)
+    title: {
+      uz: { type: String, required: true },
+      ru: { type: String },
+      oz: { type: String },
+    },
+
+    // 📜 Qaror yoki farmon raqami (ko‘p tilda)
+    decree: {
+      uz: { type: String, required: true },
+      ru: { type: String },
+      oz: { type: String },
+    },
+
+    // 🧾 Tavsif (ko‘p tilda)
+    description: {
+      uz: { type: String, required: true },
+      ru: { type: String },
+      oz: { type: String },
+    },
+
+    file: { type: String, required: true },
+
+    fileType: { type: String },
+
     createdAt: { type: Date, default: Date.now },
   },
   { versionKey: false }

@@ -13,6 +13,15 @@ exports.create = async (req, res) => {
     if(!title_uz) {
       return res.status(400).json({message: "Sarlavha (Uz) mavburiy maydon"})
     }
+    const maxLength = 300;
+    if (
+      (title_uz && title_uz.length > maxLength) ||
+      (title_ru && title_ru.length > maxLength) ||
+      (title_oz && title_oz.length > maxLength)
+    ) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ message: `Sarlavha uzunligi ${maxLength} belgidan oshmasligi kerak` });
+    }
     const mediaType = req.file.mimetype.startsWith("image") ? "image" : "video";
     const newBanner = new bannerModel({
       file: req.file.filename,
@@ -49,9 +58,19 @@ exports.getAll = async (req, res) => {
 // 🟣 Bitta banner (ID orqali)
 exports.getById = async (req, res) => {
   try {
-    const banner = await bannerModel.findById(req.params.id);
-    if (!banner) return res.status(404).json({ message: "Banner topilmadi" });
-    res.status(200).json(banner);
+    const { id } = req.params;
+
+    // ✅ ID formatini tekshiramiz
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "❌ Noto‘g‘ri ID format" });
+    }
+
+    const banner = await bannerModel.findById(id);
+    if (!banner) {
+      return res.status(404).json({ message: "❌ Banner topilmadi" });
+    }
+
+    res.status(200).json({ message: "✅ Banner topildi", data: banner });
   } catch (e) {
     res.status(500).json({ message: "Server xatosi", error: e.message });
   }
@@ -60,49 +79,90 @@ exports.getById = async (req, res) => {
 // 🟠 Banner yangilash (faylni ham o‘zgartirish mumkin)
 exports.update = async (req, res) => {
   try {
-    const { title, description } = req.body;
-    const banner = await bannerModel.findById(req.params.id);
+    const { id } = req.params;
 
-    if (!banner) return res.status(404).json({ message: "Banner topilmadi" });
+    // ✅ ID formatini tekshirish
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "❌ Noto‘g‘ri ID format" });
+    }
 
-    // Agar yangi fayl yuklansa — eski faylni o‘chir
+    const banner = await bannerModel.findById(id);
+    if (!banner) return res.status(404).json({ message: "❌ Banner topilmadi" });
+
+    const {
+      title_uz, title_ru, title_oz,
+      desc_uz, desc_ru, desc_oz
+    } = req.body;
+
+    // ✅ Majburiy maydonni tekshirish
+    if (title_uz && typeof title_uz !== "string") {
+      return res.status(400).json({ message: "❌ title_uz string bo‘lishi kerak" });
+    }
+
+    // ✅ Faylni tekshirish va eski faylni o‘chirish
     if (req.file) {
-      try {
-        fs.unlinkSync(path.join("uploads", banner.file));
-      } catch (err) {
-        console.warn("Oldingi faylni o‘chirishda xatolik:", err.message);
+      if (!req.file.mimetype.startsWith("image") && !req.file.mimetype.startsWith("video")) {
+        return res.status(400).json({ message: "❌ Faqat rasm yoki video fayl yuklash mumkin" });
+      }
+
+      const oldPath = path.join(__dirname, "../uploads/banner", banner.file);
+      if (fs.existsSync(oldPath)) {
+        try {
+          fs.unlinkSync(oldPath);
+        } catch (err) {
+          console.warn("⚠️ Eski faylni o‘chirishda xatolik:", err.message);
+        }
       }
 
       banner.file = req.file.filename;
       banner.mediaType = req.file.mimetype.startsWith("image") ? "image" : "video";
     }
 
-    banner.title = title || banner.title;
-    banner.description = description || banner.description;
+    // ✅ Ma’lumotlarni yangilaymiz
+    banner.title = {
+      uz: title_uz || banner.title.uz,
+      ru: title_ru || banner.title.ru,
+      oz: title_oz || banner.title.oz
+    };
+    banner.description = {
+      uz: desc_uz || banner.description.uz,
+      ru: desc_ru || banner.description.ru,
+      oz: desc_oz || banner.description.oz
+    };
 
     await banner.save();
 
-    res.status(200).json({ message: "Banner yangilandi", banner });
+    res.status(200).json({ message: "✅ Banner muvaffaqiyatli yangilandi", data: banner });
   } catch (e) {
-    res.status(500).json({ message: "Server error", error: e.message });
+    res.status(500).json({ message: "Server xatosi", error: e.message });
   }
 };
 
-// 🔴 Banner o‘chirish
 exports.remove = async (req, res) => {
   try {
-    const banner = await bannerModel.findById(req.params.id);
-    if (!banner) return res.status(404).json({ message: "Banner topilmadi" });
+    const { id } = req.params;
 
-    try {
-      fs.unlinkSync(path.join("uploads", banner.file));
-    } catch (err) {
-      console.warn("Faylni o‘chirishda xatolik:", err.message);
+    // ✅ ID formatini tekshirish
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "❌ Noto‘g‘ri ID format" });
     }
 
-    await bannerModel.findByIdAndDelete(req.params.id);
+    const banner = await bannerModel.findById(id);
+    if (!banner) return res.status(404).json({ message: "❌ Banner topilmadi" });
 
-    res.status(200).json({ message: "Banner o‘chirildi" });
+    // ✅ Faylni o‘chirish
+    const filePath = path.join(__dirname, "../uploads/banner", banner.file);
+    if (fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+      } catch (err) {
+        console.warn("⚠️ Faylni o‘chirishda xatolik:", err.message);
+      }
+    }
+
+    await bannerModel.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "🗑️ Banner muvaffaqiyatli o‘chirildi" });
   } catch (e) {
     res.status(500).json({ message: "Server xatosi", error: e.message });
   }

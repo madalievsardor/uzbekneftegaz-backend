@@ -48,25 +48,50 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { phone, password, role } = req.body;
+        const { phone, password } = req.body;
 
         if (!phone || !password) {
-            return res.status(400).json({ message: "Barcha maydonlarni to‘ldirish shart!" })
+            return res.status(400).json({ message: "Barcha maydonlarni to‘ldirish shart!" });
         }
 
         const user = await userModel.findOne({ phone });
-
         if (!user) {
-            return res.status(404).json({ message: "Bunday foydalanuvchi topilmadi!" })
+            return res.status(404).json({ message: "Bunday foydalanuvchi topilmadi!" });
+        }
+
+        // 🔒 Agar foydalanuvchi bloklangan bo‘lsa, vaqtini tekshiramiz
+        if (user.lockUntil && user.lockUntil > Date.now()) {
+            const remaining = Math.ceil((user.lockUntil - Date.now()) / 1000); // soniya
+            return res.status(403).json({
+                message: `Akkount vaqtincha bloklangan! Qolgan vaqt: ${remaining} soniya.`
+            });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Parol noto‘g‘ri!" })
+            user.loginAttempts += 1;
+
+            // ❗ 5 marta noto‘g‘ri kirsa — 15 soniyaga bloklash
+            if (user.loginAttempts >= 5) {
+                user.lockUntil = Date.now() + 15 * 1000; // 15 soniya
+                user.loginAttempts = 0; // reset attempts
+            }
+
+            await user.save();
+            return res.status(400).json({
+                message: "Parol noto‘g‘ri! Ehtiyot bo‘ling, 5 marta noto‘g‘ri kirishda 15 soniyaga bloklanasiz."
+            });
         }
 
+        // ✅ Parol to‘g‘ri bo‘lsa — urinishlarni nolga tushiramiz
+        user.loginAttempts = 0;
+        user.lockUntil = null;
+        await user.save();
+
         const token = jwt.sign(
-            { id: user._id, phone: user.phone, role: user.role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRES_IN }
+            { id: user._id, phone: user.phone, role: user.role },
+            JWT_SECRET,
+            { expiresIn: TOKEN_EXPIRES_IN }
         );
 
         res.status(200).json({
@@ -75,15 +100,17 @@ exports.login = async (req, res) => {
                 id: user._id,
                 username: user.username,
                 phone: user.phone,
-                role: role
+                role: user.role
             },
             token,
         });
     } catch (e) {
-        console.log("Server xatosi", e)
-        res.status(500).json({ message: "Server error", error: e.message })
+        console.log("Server xatosi", e);
+        res.status(500).json({ message: "Server xatosi!", error: e.message });
     }
-}
+};
+
+
 
 exports.getAllUsers = async (req, res) => {
     try{

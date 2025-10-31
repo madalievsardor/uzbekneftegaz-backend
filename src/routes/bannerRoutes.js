@@ -43,16 +43,16 @@ const {
  *               title_ru:
  *                 type: string
  *                 example: "Рекламный баннер (RU)"
- *               title_o'z:
+ *               title_oz:
  *                 type: string
- *                 example: "Рекламный баннер (O'z)"
+ *                 example: "Рекламный баннер (Oz)"
  *               desc_uz:
  *                 type: string
  *                 example: "Bu Uzbekcha tavsif"
  *               desc_ru:
  *                 type: string
  *                 example: "Это описание на русском"
- *               desc_o'z:
+ *               desc_oz:
  *                 type: string
  *                 example: "Бу кириллдаги тавсиф"
  *     responses:
@@ -131,7 +131,7 @@ router.get("/:id", getById);
  *               title[ru]:
  *                 type: string
  *                 example: "Обновленный баннер"
- *               title[o'z]:
+ *               title[oz]:
  *                 type: string
  *                 example: "Янгиланган баннер"
  *               description[uz]:
@@ -140,7 +140,7 @@ router.get("/:id", getById);
  *               description[ru]:
  *                 type: string
  *                 example: "Баннер с новой информацией"
- *               description[o'z]:
+ *               description[oz]:
  *                 type: string
  *                 example: "Янги маълумотлар билан баннер"
  *     responses:
