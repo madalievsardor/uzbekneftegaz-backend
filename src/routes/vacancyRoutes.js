@@ -21,8 +21,7 @@ const {
  * /vacancies:
  *   post:
  *     summary: Yangi vakansiya yaratish
- *     description: Yangi vakansiya (ish o‘rni) yaratish uchun endpoint. Majburiy maydonlar to‘ldirilishi kerak.
- *     tags: [Vacancy]
+ *     tags: [Vacancies]
  *     requestBody:
  *       required: true
  *       content:
@@ -37,99 +36,80 @@ const {
  *             properties:
  *               title:
  *                 type: object
- *                 required:
- *                   - uz
- *                   - ru
- *                   - oz
  *                 properties:
  *                   uz:
  *                     type: string
- *                     example: "Frontend dasturchi kerak"
- *                   oz:
- *                     type: string
- *                     example: "Фронтенд дастурчи керак"
+ *                     example: Frontend dasturchi kerak
  *                   ru:
  *                     type: string
- *                     example: "Требуется фронтенд разработчик"
+ *                     example: Требуется фронтенд разработчик
+ *                   oz:
+ *                     type: string
+ *                     example: Фронтенд дастурчи керак
  *               description:
  *                 type: object
- *                 required:
- *                   - uz
- *                   - ru
- *                   - oz
  *                 properties:
  *                   uz:
  *                     type: string
- *                     example: "React.js, HTML, CSS bilimlariga ega bo‘lishi kerak"
- *                   oz:
- *                     type: string
- *                     example: "React.js, HTML, CSS билимларига эга бўлиши керак"
+ *                     example: React.js, HTML, CSS bilimlariga ega bo‘lishi kerak
  *                   ru:
  *                     type: string
- *                     example: "Необходимо знание React.js, HTML, CSS"
+ *                     example: Необходимо знание React.js, HTML, CSS
+ *                   oz:
+ *                     type: string
+ *                     example: React.js, HTML, CSS билимларига эга бўлиши керак
  *               salary:
  *                 type: object
  *                 properties:
  *                   uz:
  *                     type: string
- *                     example: "10 000 000 so‘m"
- *                   oz:
- *                     type: string
- *                     example: "10 000 000 сўм"
+ *                     example: 10 000 000 so‘m
  *                   ru:
  *                     type: string
- *                     example: "10 000 000 сум"
+ *                     example: 10 000 000 сум
+ *                   oz:
+ *                     type: string
+ *                     example: 10 000 000 сўм
  *               requirements:
  *                 type: object
  *                 properties:
  *                   uz:
  *                     type: string
- *                     example: "Kamida 1 yil tajriba talab qilinadi"
- *                   oz:
- *                     type: string
- *                     example: "Камида 1 йил тажриба талаб қилинади"
+ *                     example: Kamida 1 yil tajriba talab qilinadi
  *                   ru:
  *                     type: string
- *                     example: "Требуется опыт не менее 1 года"
+ *                     example: Требуется опыт не менее 1 года
+ *                   oz:
+ *                     type: string
+ *                     example: Камида 1 йил тажриба талаб қилинади
  *               deadline:
  *                 type: string
  *                 format: date
- *                 example: "2025-12-31"
+ *                 example: 2025-12-31
  *               salaryType:
  *                 type: object
- *                 required:
- *                   - uz
- *                   - ru
- *                   - oz
  *                 properties:
  *                   uz:
  *                     type: string
- *                     example: "To‘liq stavka"
- *                   oz:
- *                     type: string
- *                     example: "Тўлиқ ставка"
+ *                     enum: ["To'liq stavka", "Yarim stavka"]
+ *                     example: To'liq stavka
  *                   ru:
  *                     type: string
- *                     example: "Полная ставка"
+ *                     enum: ["Полная ставка", "Половина ставки"]
+ *                     example: Полная ставка
+ *                   oz:
+ *                     type: string
+ *                     enum: ["Full-time", "Part-time"]
+ *                     example: Full-time
  *     responses:
  *       201:
  *         description: Vakansiya muvaffaqiyatli yaratildi
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Vakansiya muvaffaqiyatli yaratildi."
- *                 vacancy:
- *                   type: object
  *       400:
  *         description: Majburiy maydonlar to‘ldirilmagan
  *       500:
- *         description: Server xatosi
+ *         description: Serverda xatolik
  */
-router.post("/",  create);
+router.post("/", create);
 
 
 /**

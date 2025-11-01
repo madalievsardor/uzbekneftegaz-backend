@@ -1,10 +1,29 @@
 const mongoose = require("mongoose");
 
-const tarkibiiyBolimSchema = new mongoose.Schema({
-    title: { type: String, required: true},
-    employees: { type: String, required: true},
-    leader: { type: String, required: true},
-    description: { type: String, required: false}
-}, {timestamps: true})
+const tarkibiyBolimSchema = new mongoose.Schema(
+  {
+    title: {
+      uz: { type: String, required: true },
+      ru: { type: String, required: false },
+      oz: { type: String, required: false },
+    },
+    employees: {
+      uz: { type: String, required: true },
+      ru: { type: String, required: false },
+      oz: { type: String, required: false },
+    },
+    leader: {
+      uz: { type: String, required: true },
+      ru: { type: String, required: false },
+      oz: { type: String, required: false },
+    },
+    description: {
+      uz: { type: String, required: false },
+      ru: { type: String, required: false },
+      oz: { type: String, required: false },
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model("NefteGazBolim", tarkibiiyBolimSchema)
+module.exports = mongoose.model("NefteGazBolim", tarkibiyBolimSchema);

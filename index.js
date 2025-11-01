@@ -13,7 +13,8 @@ const leaderRoutes = require("./src/routes/leaderRoutes");
 const vacancyRoutes = require("./src/routes/vacancyRoutes");
 const normativRoutes = require("./src/routes/normativeRoutes");
 const honoraryRoutes = require("./src/routes/honoraryRoutes");
-const tarkibiiyBolimRoutes = require("./src/routes/tarkibiyBolimRoutes")
+const tarkibiyBolimRoutes = require("./src/routes/tarkibiyBolimRoutes");
+const newsRoutes = require("./src/routes/newsRoutes");
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
@@ -39,7 +40,8 @@ app.use("/api/leader", leaderRoutes);
 app.use("/api/vacancies", vacancyRoutes)
 app.use("/api/normative", normativRoutes)
 app.use("/api/honorary", honoraryRoutes)
-app.use("/api/bolimlar", tarkibiiyBolimRoutes)
+app.use("/api/bolimlar", tarkibiyBolimRoutes)
+app.use("/api/news", newsRoutes)
 // Statik fayllar
 // Statik fayllar
 app.use("/uploads/banners", express.static(path.join(__dirname, "src", "uploads", "banners")));

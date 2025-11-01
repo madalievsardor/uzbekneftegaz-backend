@@ -6,7 +6,10 @@ const fs = require("fs");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     let folderPath;
-
+    
+    if (req.baseUrl.includes("/news")) {
+      folderPath = path.join(__dirname, "../uploads/news");
+    }
     // 🔹 Banner fayllar
     if (req.baseUrl.includes("/banner")) {
       folderPath = path.join(__dirname, "../uploads/banners");
