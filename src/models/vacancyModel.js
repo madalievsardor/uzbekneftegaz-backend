@@ -23,9 +23,9 @@ const vacancySchema = new mongoose.Schema({
     },
     deadline: { type: Date, required: true },
     salaryType: {
-        uz: { type: String, enum: ["To'liq stavka", "Yarim stavka"], required: true },
+        uz: { type: String, enum: ["To‘liq stavka", "Yarim stavka"], required: true },
         ru: { type: String, enum: ["Полная ставка", "Половина ставки"], required: true },
-        oz: { type: String, enum: ["Full-time", "Part-time"], required: true }
+        oz: { type: String, enum: ["Тўлиқ ставка", "Ярим ставка"], required: true }
     }
 }, { timestamps: true });
 

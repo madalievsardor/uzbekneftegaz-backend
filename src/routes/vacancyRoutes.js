@@ -21,9 +21,8 @@ const {
  * /vacancies:
  *   post:
  *     summary: Yangi vakansiya yaratish
+ *     description: Yangi vakansiya (ish o‘rni) yaratish uchun endpoint. Majburiy maydonlar to‘ldirilishi kerak.
  *     tags: [Vacancy]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -38,38 +37,80 @@ const {
  *             properties:
  *               title:
  *                 type: object
+ *                 required:
+ *                   - uz
+ *                   - ru
+ *                   - oz
  *                 properties:
- *                   uz: { type: string, example: "Vakansiya nomi (UZ)" }
- *                   oz: { type: string, example: "Вакансия номи (OZ)" }
- *                   ru: { type: string, example: "Название вакансии (RU)" }
+ *                   uz:
+ *                     type: string
+ *                     example: "Frontend dasturchi kerak"
+ *                   oz:
+ *                     type: string
+ *                     example: "Фронтенд дастурчи керак"
+ *                   ru:
+ *                     type: string
+ *                     example: "Требуется фронтенд разработчик"
  *               description:
  *                 type: object
+ *                 required:
+ *                   - uz
+ *                   - ru
+ *                   - oz
  *                 properties:
- *                   uz: { type: string, example: "Tavsif (UZ)" }
- *                   oz: { type: string, example: "Тавсиф (OZ)" }
- *                   ru: { type: string, example: "Описание (RU)" }
+ *                   uz:
+ *                     type: string
+ *                     example: "React.js, HTML, CSS bilimlariga ega bo‘lishi kerak"
+ *                   oz:
+ *                     type: string
+ *                     example: "React.js, HTML, CSS билимларига эга бўлиши керак"
+ *                   ru:
+ *                     type: string
+ *                     example: "Необходимо знание React.js, HTML, CSS"
  *               salary:
  *                 type: object
  *                 properties:
- *                   uz: { type: string, example: "1000 USD (UZ)" }
- *                   oz: { type: string, example: "1000 USD (OZ)" }
- *                   ru: { type: string, example: "1000 USD (RU)" }
+ *                   uz:
+ *                     type: string
+ *                     example: "10 000 000 so‘m"
+ *                   oz:
+ *                     type: string
+ *                     example: "10 000 000 сўм"
+ *                   ru:
+ *                     type: string
+ *                     example: "10 000 000 сум"
  *               requirements:
  *                 type: object
  *                 properties:
- *                   uz: { type: string, example: "Talablar (UZ)" }
- *                   oz: { type: string, example: "Талаблар (OZ)" }
- *                   ru: { type: string, example: "Требования (RU)" }
+ *                   uz:
+ *                     type: string
+ *                     example: "Kamida 1 yil tajriba talab qilinadi"
+ *                   oz:
+ *                     type: string
+ *                     example: "Камида 1 йил тажриба талаб қилинади"
+ *                   ru:
+ *                     type: string
+ *                     example: "Требуется опыт не менее 1 года"
  *               deadline:
  *                 type: string
  *                 format: date
  *                 example: "2025-12-31"
  *               salaryType:
  *                 type: object
+ *                 required:
+ *                   - uz
+ *                   - ru
+ *                   - oz
  *                 properties:
- *                   uz: { type: string, example: "To'liq stavka" }
- *                   oz: { type: string, example: "Тўлиқ ставка" }
- *                   ru: { type: string, example: "Полная ставка" }
+ *                   uz:
+ *                     type: string
+ *                     example: "To‘liq stavka"
+ *                   oz:
+ *                     type: string
+ *                     example: "Тўлиқ ставка"
+ *                   ru:
+ *                     type: string
+ *                     example: "Полная ставка"
  *     responses:
  *       201:
  *         description: Vakansiya muvaffaqiyatli yaratildi
@@ -78,15 +119,18 @@ const {
  *             schema:
  *               type: object
  *               properties:
- *                 message: { type: string, example: "Vakansiya muvaffaqiyatli yaratildi." }
+ *                 message:
+ *                   type: string
+ *                   example: "Vakansiya muvaffaqiyatli yaratildi."
  *                 vacancy:
- *                   $ref: '#/components/schemas/Vacancy'
+ *                   type: object
  *       400:
- *         description: Majburiy maydonlar to'ldirilishi shart
+ *         description: Majburiy maydonlar to‘ldirilmagan
  *       500:
  *         description: Server xatosi
  */
-router.post("/", verifyToken, create);
+router.post("/",  create);
+
 
 /**
  * @swagger
