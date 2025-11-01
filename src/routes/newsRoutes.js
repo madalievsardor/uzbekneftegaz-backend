@@ -1,20 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middleware/upload");
-const newsController = require("../controllers/newsController");
+const upload = require("../middleware/upload"); // multer konfiguratsiyasi
+const {
+  create,
+  getAll,
+  getById,
+  update,
+  remove,
+} = require("../controllers/newsController");
 
 /**
  * @swagger
  * tags:
  *   name: News
- *   description: Yangiliklar bo‘limi
+ *   description: Yangiliklar bo‘limi (3 tilda)
  */
 
 /**
  * @swagger
  * /news:
  *   post:
- *     summary: Yangi yangilik yaratish
+ *     summary: Yangi yangilik yaratish (uz, ru, oz)
  *     tags: [News]
  *     consumes:
  *       - multipart/form-data
@@ -25,29 +31,36 @@ const newsController = require("../controllers/newsController");
  *           schema:
  *             type: object
  *             properties:
- *               title:
+ *               title_uz:
  *                 type: string
- *                 description: Yangilik sarlavhasi
- *                 example: "Yangi gaz quvuri ishga tushdi"
- *               description:
+ *                 example: "Yangi loyiha boshlandi"
+ *               title_ru:
  *                 type: string
- *                 description: Yangilik tavsifi
- *                 example: "Bugun yangi gaz quvuri foydalanishga topshirildi..."
+ *                 example: "Начался новый проект"
+ *               title_oz:
+ *                 type: string
+ *                 example: "Yangi loyiha boshlandi (lotin)"
+ *               desc_uz:
+ *                 type: string
+ *                 example: "Bu loyiha energiya sohasida amalga oshirilmoqda."
+ *               desc_ru:
+ *                 type: string
+ *                 example: "Этот проект реализуется в энергетической сфере."
+ *               desc_oz:
+ *                 type: string
+ *                 example: "Bu loyiha energiya sohasida amalga oshirilmoqda (lotin)."
  *               images:
  *                 type: array
  *                 items:
  *                   type: string
  *                   format: binary
- *                   description: Yangilik rasmi
  *     responses:
  *       201:
  *         description: Yangilik muvaffaqiyatli yaratildi
  *       400:
- *         description: Ma'lumotlar to‘liq emas yoki xato
- *       500:
- *         description: Serverda xatolik
+ *         description: Majburiy maydon to‘ldirilmagan
  */
-router.post("/", upload.array("images", 10), newsController.create);
+router.post("/", upload.array("images", 10), create);
 
 /**
  * @swagger
@@ -58,107 +71,95 @@ router.post("/", upload.array("images", 10), newsController.create);
  *     responses:
  *       200:
  *         description: Barcha yangiliklar ro‘yxati
- *       500:
- *         description: Serverda xatolik
  */
-router.get("/", newsController.getAll);
+router.get("/", getAll);
 
 /**
  * @swagger
  * /news/{id}:
  *   get:
- *     summary: ID bo‘yicha bitta yangilikni olish
+ *     summary: ID orqali bitta yangilikni olish
  *     tags: [News]
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
- *         description: Yangilikning ID si
+ *         description: Yangilik ID si
  *         schema:
  *           type: string
- *           example: 671f2ab937e2d1b7c3a8b2d1
  *     responses:
  *       200:
- *         description: Yangilik topildi
- *       400:
- *         description: Noto‘g‘ri ID formati
+ *         description: Topilgan yangilik
  *       404:
  *         description: Yangilik topilmadi
- *       500:
- *         description: Serverda xatolik
  */
-router.get("/:id", newsController.getById);
+router.get("/:id", getById);
 
 /**
  * @swagger
  * /news/{id}:
  *   put:
- *     summary: Yangilikni yangilash
+ *     summary: Yangilikni tahrirlash (uz, ru, oz)
  *     tags: [News]
  *     consumes:
  *       - multipart/form-data
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
- *         description: Yangilanishi kerak bo‘lgan yangilikning ID si
+ *         description: Yangilanishi kerak bo‘lgan yangilik ID si
  *         schema:
  *           type: string
  *     requestBody:
- *       required: false
  *       content:
  *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               title:
+ *               title_uz:
  *                 type: string
- *                 example: "Yangilangan sarlavha"
- *               description:
+ *               title_ru:
  *                 type: string
- *                 example: "Yangilangan tavsif"
+ *               title_oz:
+ *                 type: string
+ *               desc_uz:
+ *                 type: string
+ *               desc_ru:
+ *                 type: string
+ *               desc_oz:
+ *                 type: string
  *               images:
  *                 type: array
  *                 items:
  *                   type: string
  *                   format: binary
- *                   description: Qo‘shimcha rasmlar
  *     responses:
  *       200:
  *         description: Yangilik muvaffaqiyatli yangilandi
- *       400:
- *         description: Noto‘g‘ri ID formati yoki xato ma'lumot
  *       404:
  *         description: Yangilik topilmadi
- *       500:
- *         description: Serverda xatolik
  */
-router.put("/:id", upload.array("images", 10), newsController.update);
+router.put("/:id", upload.array("images", 10), update);
 
 /**
  * @swagger
  * /news/{id}:
  *   delete:
- *     summary: ID bo‘yicha yangilikni o‘chirish
+ *     summary: Yangilikni o‘chirish
  *     tags: [News]
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
- *         description: O‘chiriladigan yangilikning ID si
+ *         description: O‘chiriladigan yangilik ID si
  *         schema:
  *           type: string
- *           example: 671f2ab937e2d1b7c3a8b2d1
  *     responses:
  *       200:
- *         description: Yangilik o‘chirildi
- *       400:
- *         description: Noto‘g‘ri ID formati
+ *         description: Yangilik muvaffaqiyatli o‘chirildi
  *       404:
  *         description: Yangilik topilmadi
- *       500:
- *         description: Serverda xatolik
  */
-router.delete("/:id", newsController.remove);
+router.delete("/:id", remove);
 
 module.exports = router;

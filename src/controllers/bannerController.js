@@ -1,7 +1,7 @@
 const bannerModel = require("../models/bannerModel");
 const fs = require("fs");
 const path = require("path");
-
+const mongoose = require("mongoose")
 // 🟢 Banner yaratish
 exports.create = async (req, res) => {
   try {
