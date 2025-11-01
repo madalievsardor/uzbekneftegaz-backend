@@ -1,103 +1,99 @@
-const Bolim = require("../models/tarkibiyBolimModel");
+const Vacancy = require("../models/vacancyModel");
 
-// ➕ CREATE — yangi bo‘lim yaratish
+// CREATE
 exports.create = async (req, res) => {
   try {
-    const { title, employees, leader, description } = req.body;
+    const { title, description, salary, requirements, deadline, salaryType } = req.body;
 
-    // faqat uz maydonlari tekshiriladi
-    if (!title?.uz || !employees?.uz || !leader?.uz) {
-      return res
-        .status(400)
-        .json({ message: "Uzbek tilidagi (uz) maydonlar majburiy!" });
+    // Faqat uz maydonlarini tekshiramiz
+    if (
+      !title?.uz ||
+      !description?.uz ||
+      !deadline ||
+      !salaryType?.uz
+    ) {
+      return res.status(400).json({
+        message: "Uzbek tilidagi (uz) maydonlar majburiy!",
+      });
     }
 
-    const newBolim = new Bolim({
+    const vacancy = new Vacancy({
       title,
-      employees,
-      leader,
-      description: description || { uz: "", ru: "", oz: "" },
+      description,
+      salary,
+      requirements,
+      deadline,
+      salaryType,
     });
 
-    await newBolim.save();
+    await vacancy.save();
+
     res.status(201).json({
-      message: "Bo‘lim muvaffaqiyatli yaratildi",
-      bolim: newBolim,
+      message: "Vakansiya muvaffaqiyatli yaratildi",
+      vacancy,
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Serverda xatolik", error: err.message });
+  } catch (error) {
+    console.error("Error creating vacancy:", error);
+    res.status(500).json({
+      message: "Serverda xatolik yuz berdi",
+      error: error.message,
+    });
   }
 };
 
-// 📋 GET ALL — barcha bo‘limlarni olish
+// GET ALL
 exports.getAll = async (req, res) => {
   try {
-    const bolimlar = await Bolim.find().sort({ createdAt: -1 });
-    res.status(200).json({ message: "Barcha bo‘limlar", bolimlar });
-  } catch (err) {
-    res.status(500).json({ message: "Serverda xatolik", error: err.message });
+    const vacancies = await Vacancy.find().sort({ createdAt: -1 });
+    res.status(200).json({ message: "Barcha vakansiyalar", vacancies });
+  } catch (error) {
+    res.status(500).json({ message: "Server xatosi", error: error.message });
   }
 };
 
-// 🧾 GET BY ID — ID orqali olish
+// GET BY ID
 exports.getById = async (req, res) => {
   try {
-    const bolim = await Bolim.findById(req.params.id);
-    if (!bolim) {
-      return res.status(404).json({ message: "Bo‘lim topilmadi" });
-    }
-    res.status(200).json({ bolim });
-  } catch (err) {
-    res.status(500).json({ message: "Serverda xatolik", error: err.message });
+    const vacancy = await Vacancy.findById(req.params.id);
+    if (!vacancy)
+      return res.status(404).json({ message: "Vakansiya topilmadi" });
+    res.status(200).json({ message: "Vakansiya topildi", vacancy });
+  } catch (error) {
+    res.status(500).json({ message: "Server xatosi", error: error.message });
   }
 };
 
-// ✏️ UPDATE — faqat kelgan maydonlarni yangilash
+// UPDATE
 exports.update = async (req, res) => {
   try {
-    const bolim = await Bolim.findById(req.params.id);
-    if (!bolim) {
-      return res.status(404).json({ message: "Bo‘lim topilmadi" });
-    }
+    const updateData = req.body;
+    const vacancy = await Vacancy.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
 
-    const { title, employees, leader, description } = req.body;
-
-    // 🔹 Har bir maydon uchun, agar kelsa — yangilaymiz, kelmasa — eski qiymatni qoldiramiz
-    if (title) {
-      bolim.title = { ...bolim.title, ...title };
-    }
-    if (employees) {
-      bolim.employees = { ...bolim.employees, ...employees };
-    }
-    if (leader) {
-      bolim.leader = { ...bolim.leader, ...leader };
-    }
-    if (description) {
-      bolim.description = { ...bolim.description, ...description };
-    }
-
-    await bolim.save();
+    if (!vacancy)
+      return res.status(404).json({ message: "Vakansiya topilmadi" });
 
     res.status(200).json({
-      message: "Bo‘lim muvaffaqiyatli yangilandi",
-      bolim,
+      message: "Vakansiya yangilandi",
+      vacancy,
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Serverda xatolik", error: err.message });
+  } catch (error) {
+    res.status(500).json({ message: "Server xatosi", error: error.message });
   }
 };
 
-// ❌ DELETE — ID orqali o‘chirish
+// DELETE
 exports.remove = async (req, res) => {
   try {
-    const deleted = await Bolim.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ message: "Bo‘lim topilmadi" });
-    }
-    res.status(200).json({ message: "Bo‘lim muvaffaqiyatli o‘chirildi" });
-  } catch (err) {
-    res.status(500).json({ message: "Serverda xatolik", error: err.message });
+    const vacancy = await Vacancy.findByIdAndDelete(req.params.id);
+    if (!vacancy)
+      return res.status(404).json({ message: "Vakansiya topilmadi" });
+
+    res.status(200).json({ message: "Vakansiya o‘chirildi" });
+  } catch (error) {
+    res.status(500).json({ message: "Server xatosi", error: error.message });
   }
 };

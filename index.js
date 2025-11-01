@@ -46,6 +46,7 @@ app.use("/api/news", newsRoutes)
 // Statik fayllar
 app.use("/uploads/banners", express.static(path.join(__dirname, "src", "uploads", "banners")));
 app.use("/uploads/files", express.static(path.join(__dirname, "src", "uploads", "files")));
+app.use("/uploads/news", express.static(path.join(__dirname, "src", "uploads", "news")));
 app.use("/uploads/honorary", express.static(path.join(__dirname, "src", "uploads", "honorary")));
 app.use("/assets", express.static(path.join(__dirname, "src/assets/images")));
 

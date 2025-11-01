@@ -21,7 +21,9 @@ const {
  * /vacancies:
  *   post:
  *     summary: Yangi vakansiya yaratish
- *     tags: [Vacancies]
+ *     tags: [Vacancy]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -99,7 +101,7 @@ const {
  *                     example: Полная ставка
  *                   oz:
  *                     type: string
- *                     enum: ["Full-time", "Part-time"]
+ *                     enum: ["Тўлиқ ставка", "Ярим ставка"]
  *                     example: Full-time
  *     responses:
  *       201:
@@ -109,7 +111,7 @@ const {
  *       500:
  *         description: Serverda xatolik
  */
-router.post("/", create);
+router.post("/", verifyToken, create);
 
 
 /**

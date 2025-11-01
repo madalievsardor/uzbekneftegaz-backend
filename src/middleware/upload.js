@@ -6,28 +6,23 @@ const fs = require("fs");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     let folderPath;
-    
+
     if (req.baseUrl.includes("/news")) {
       folderPath = path.join(__dirname, "../uploads/news");
     }
-    // 🔹 Banner fayllar
-    if (req.baseUrl.includes("/banner")) {
+    else if (req.baseUrl.includes("/banner")) {
       folderPath = path.join(__dirname, "../uploads/banners");
     }
-    // 🔹 Normativ hujjatlar
     else if (req.baseUrl.includes("/normative")) {
       folderPath = path.join(__dirname, "../uploads/files");
     }
-    // 🔹 Faxriy xodimlar (honorary)
     else if (req.baseUrl.includes("/honorary")) {
       folderPath = path.join(__dirname, "../uploads/honorary");
     }
-    // 🔹 Default (boshqa endpointlar)
     else {
       folderPath = path.join(__dirname, "../uploads/others");
     }
 
-    // ✅ Papka yo‘qligini tekshirib, avtomatik yaratamiz
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath, { recursive: true });
       console.log("📁 Yangi papka yaratildi:", folderPath);
@@ -35,13 +30,13 @@ const storage = multer.diskStorage({
 
     cb(null, folderPath);
   },
-
   filename: (req, file, cb) => {
     const uniqueName =
       Date.now() + "-" + file.originalname.replace(/\s+/g, "_");
     cb(null, uniqueName);
   },
 });
+
 
 // 🔸 Ruxsat berilgan fayl turlari
 const allowedTypes = [
