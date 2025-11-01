@@ -35,7 +35,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/auth", authRoutes);
 app.use("/api/banner", bannerRoutes);
 app.use("/api/leader", leaderRoutes);
-app.use("/api/vacancy", vacancyRoutes)
+app.use("/api/vacancies", vacancyRoutes)
 app.use("/api/normative", normativRoutes)
 app.use("/api/honorary", honoraryRoutes)
 // Statik fayllar
