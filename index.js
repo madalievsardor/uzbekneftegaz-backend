@@ -10,9 +10,10 @@ const PORT = process.env.PORT || 8000;
 const authRoutes = require("./src/routes/authRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
 const leaderRoutes = require("./src/routes/leaderRoutes");
-const vacancyRoutes = require("./src/routes/vacancyRoutes")
-const normativRoutes = require("./src/routes/normativeRoutes")
-const honoraryRoutes = require("./src/routes/honoraryRoutes")
+const vacancyRoutes = require("./src/routes/vacancyRoutes");
+const normativRoutes = require("./src/routes/normativeRoutes");
+const honoraryRoutes = require("./src/routes/honoraryRoutes");
+const tarkibiiyBolimRoutes = require("./src/routes/tarkibiyBolimRoutes")
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
@@ -38,6 +39,7 @@ app.use("/api/leader", leaderRoutes);
 app.use("/api/vacancies", vacancyRoutes)
 app.use("/api/normative", normativRoutes)
 app.use("/api/honorary", honoraryRoutes)
+app.use("/api/bolimlar", tarkibiiyBolimRoutes)
 // Statik fayllar
 // Statik fayllar
 app.use("/uploads/banners", express.static(path.join(__dirname, "src", "uploads", "banners")));
