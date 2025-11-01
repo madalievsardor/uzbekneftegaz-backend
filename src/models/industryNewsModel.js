@@ -17,4 +17,4 @@ const industryNewsModel = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("NefteGazNews", industryNewsModel);
+module.exports = mongoose.model("NefteGazNewsIndustry", industryNewsModel);

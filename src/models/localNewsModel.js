@@ -17,4 +17,4 @@ const localNewsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("NefteGazNews", localNewsSchema);
+module.exports = mongoose.model("NefteGazNewsLocalNews", localNewsSchema);
