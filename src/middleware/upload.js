@@ -25,6 +25,9 @@ const storage = multer.diskStorage({
     else if (req.baseUrl.includes("/honorary")) {
       folderPath = path.join(__dirname, "../uploads/honorary");
     } 
+    else if (req.baseUrl.includes("/leader")) {
+      folderPath = path.join(__dirname, "../uploads/leaders");
+    } 
     else {
       folderPath = path.join(__dirname, "../uploads/others");
     }
