@@ -85,7 +85,7 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/", verifyToken, create);
+router.post("/", verifyToken,  create);
 
 /**
  * @swagger
@@ -200,15 +200,15 @@ router.get("/:id", getById);
  *                 example: "Reja"
  *     responses:
  *       200:
- *         description: ✅ Muvaffaqiyatli yangilandi
+ *         description:  Muvaffaqiyatli yangilandi
  *       400:
- *         description: ❌ Noto‘g‘ri so‘rov
+ *         description:  Noto‘g‘ri so‘rov
  *       404:
- *         description: ❌ Ma’lumot topilmadi
+ *         description: Ma’lumot topilmadi
  *       500:
- *         description: ❌ Server xatosi
+ *         description:  Server xatosi
  */
-router.put("/:id", verifyToken, update);
+router.put("/:id", verifyToken,  update);
 
 
 /**
