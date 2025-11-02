@@ -10,7 +10,7 @@ const leaderShipSchema = new mongoose.Schema({
         uz: { type: String, required: true },
         oz: { type: String, required: true },
         ru: { type: String, required: true }
-    },
+    },  
     phone: { type: String, required: true },
     email: { type: String, required: false },
     avatar: {
