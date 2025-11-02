@@ -1,0 +1,147 @@
+const mongoose = require("mongoose");
+
+const plansReportsSchema = new mongoose.Schema(
+  {
+    startMonth: {
+      uz: {
+        type: String,
+        required: true,
+        enum: [
+          "Январ",
+          "Феврал",
+          "Март",
+          "Апрел",
+          "Май",
+          "Июн",
+          "Июл",
+          "Август",
+          "Сентабр",
+          "Октябр",
+          "Ноябр",
+          "Декабр",
+        ],
+      },
+      oz: {
+        type: String,
+        required: false,
+        enum: [
+          "Yanvar",
+          "Fevral",
+          "Mart",
+          "Aprel",
+          "May",
+          "Iyun",
+          "Iyul",
+          "Avgust",
+          "Sentabr",
+          "Oktabr",
+          "Noyabr",
+          "Dekabr",
+        ],
+      },
+      ru: {
+        type: String,
+        required: false,
+        enum: [
+          "Январь",
+          "Февраль",
+          "Март",
+          "Апрель",
+          "Май",
+          "Июнь",
+          "Июль",
+          "Август",
+          "Сентябрь",
+          "Октябрь",
+          "Ноябрь",
+          "Декабрь",
+        ],
+      },
+    },
+    endMonth: {
+      uz: {
+        type: String,
+        required: true,
+        enum: [
+          "Январ",
+          "Феврал",
+          "Март",
+          "Апрел",
+          "Май",
+          "Июн",
+          "Июл",
+          "Август",
+          "Сентабр",
+          "Октябр",
+          "Ноябр",
+          "Декабр",
+        ],
+      },
+      oz: {
+        type: String,
+        required: false,
+        enum: [
+          "Yanvar",
+          "Fevral",
+          "Mart",
+          "Aprel",
+          "May",
+          "Iyun",
+          "Iyul",
+          "Avgust",
+          "Sentabr",
+          "Oktabr",
+          "Noyabr",
+          "Dekabr",
+        ],
+      },
+      ru: {
+        type: String,
+        required: false,
+        enum: [
+          "Январь",
+          "Февраль",
+          "Март",
+          "Апрель",
+          "Май",
+          "Июнь",
+          "Июль",
+          "Август",
+          "Сентябрь",
+          "Октябрь",
+          "Ноябрь",
+          "Декабрь",
+        ],
+      },
+    },
+    category: {
+      uz: {
+        type: String,
+        required: true,
+        enum: ["Режа", "Хисобот"],
+      },
+      ru: {
+        type: String,
+        enum: ["План", "Отчет"],
+      },
+      oz: {
+        type: String,
+        enum: ["Reja", "Hisobot"],
+      },
+    },
+    title: {
+      uz: { type: String, required: true },
+      oz: { type: String, required: false },
+      ru: { type: String, required: false },
+    },
+    description: {
+      uz: { type: String, required: true },
+      oz: { type: String, required: false },
+      ru: { type: String, required: false },
+    },
+    participantsCount: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("NefteGazPlansReports", plansReportsSchema);

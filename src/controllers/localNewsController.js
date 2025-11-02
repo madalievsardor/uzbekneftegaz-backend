@@ -3,13 +3,12 @@ const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs");
 
-// 📰 YANGILIK YARATISH
 exports.create = async (req, res) => {
   try {
     const { title_uz, title_ru, title_oz, desc_uz, desc_ru, desc_oz } = req.body;
 
     if (!title_uz || !desc_uz) {
-      return res.status(400).json({ message: "O‘zbekcha title va description majburiy!" });
+      return res.status(400).json({ message: "O'zbekcha title va description majburiy!" });
     }
 
     let images = [];
@@ -31,7 +30,6 @@ exports.create = async (req, res) => {
   }
 };
 
-// 🧾 BARCHA YANGILIKLARNI O‘QISH
 exports.getAll = async (req, res) => {
   try {
     const news = await LocalNews.find().sort({ createdAt: -1 });
@@ -120,7 +118,7 @@ exports.remove = async (req, res) => {
     }
 
     await LocalNews.findByIdAndDelete(id);
-    res.status(200).json({ message: "Yangilik muvaffaqiyatli o‘chirildi ✅" });
+    res.status(200).json({ message: "Yangilik muvaffaqiyatli o'chirildi" });
   } catch (error) {
     console.error("❌ Xatolik (remove):", error);
     res.status(500).json({ message: "Serverda xatolik", error: error.message });

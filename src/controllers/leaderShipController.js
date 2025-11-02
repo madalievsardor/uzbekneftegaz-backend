@@ -14,6 +14,10 @@ exports.create = async (req, res) => {
       description,
     } = req.body;
 
+    let avatarPath = "/assets/leader.png";
+    if (req.file) {
+      avatarPath = "/uploads/" + req.file.filename; // multer orqali kelgan fayl
+    }
     if (!fullName || !grade || !phone || !workDays || !workHours) {
       return res
         .status(400)
@@ -22,7 +26,9 @@ exports.create = async (req, res) => {
 
     const phoneRegex = /^[\d\s+\-()]{7,20}$/;
     if (!phoneRegex.test(phone)) {
-      return res.status(400).json({ message: "❌ Telefon raqami noto‘g‘ri formatda!" });
+      return res
+        .status(400)
+        .json({ message: "❌ Telefon raqami noto‘g‘ri formatda!" });
     }
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -34,14 +40,16 @@ exports.create = async (req, res) => {
       grade,
       phone,
       email,
-      avatar,
+      avatar: avatarPath,
       workDays,
       workHours,
-      description: description || "",
+      description,
     });
 
     await leader.save();
-    res.status(201).json({ message: "✅ Rahbar muvaffaqiyatli qo‘shildi", leader });
+    res
+      .status(201)
+      .json({ message: "✅ Rahbar muvaffaqiyatli qo‘shildi", leader });
   } catch (e) {
     console.error("❌ Xatolik:", e);
     res.status(500).json({ message: "Serverda xatolik", error: e.message });
