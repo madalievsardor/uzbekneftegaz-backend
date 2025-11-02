@@ -62,7 +62,7 @@ exports.getById = async (req, res) => {
 
     // ✅ ID formatini tekshiramiz
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "❌ Noto‘g‘ri ID format" });
+      return res.status(400).json({ message: "❌ Noto'g'ri ID format" });
     }
 
     const banner = await bannerModel.findById(id);
@@ -76,22 +76,22 @@ exports.getById = async (req, res) => {
   }
 };
 
-// 🟠 Banner yangilash (faylni ham o‘zgartirish mumkin)
+// 🟠 Banner yangilash (faylni ham o'zgartirish mumkin)
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Noto‘g‘ri ID formati!" });
+      return res.status(400).json({ message: "Noto'g'ri ID formati!" });
     }
 
     const banner = await bannerModel.findById(id);
     if (!banner) return res.status(404).json({ message: "Banner topilmadi!" });
 
-    // Agar fayl yuklangan bo‘lsa
+    // Agar fayl yuklangan bo'lsa
     if (req.file) {
-      // Eski faylni o‘chirish
+      // Eski faylni o'chirish
       if (banner.file) {
         const oldPath = path.join(__dirname, "../uploads/banners", banner.file);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
@@ -118,25 +118,25 @@ exports.remove = async (req, res) => {
 
     // ✅ ID formatini tekshirish
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "❌ Noto‘g‘ri ID format" });
+      return res.status(400).json({ message: "❌ Noto'g'ri ID format" });
     }
 
     const banner = await bannerModel.findById(id);
     if (!banner) return res.status(404).json({ message: "❌ Banner topilmadi" });
 
-    // ✅ Faylni o‘chirish
+    // ✅ Faylni o'chirish
     const filePath = path.join(__dirname, "../uploads/banner", banner.file);
     if (fs.existsSync(filePath)) {
       try {
         fs.unlinkSync(filePath);
       } catch (err) {
-        console.warn("⚠️ Faylni o‘chirishda xatolik:", err.message);
+        console.warn("⚠️ Faylni o'chirishda xatolik:", err.message);
       }
     }
 
     await bannerModel.findByIdAndDelete(id);
 
-    res.status(200).json({ message: "🗑️ Banner muvaffaqiyatli o‘chirildi" });
+    res.status(200).json({ message: "🗑️ Banner muvaffaqiyatli o'chirildi" });
   } catch (e) {
     res.status(500).json({ message: "Server xatosi", error: e.message });
   }
