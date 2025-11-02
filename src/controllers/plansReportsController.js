@@ -154,7 +154,7 @@ exports.update = async (req, res) => {
     await plans.save();
 
     res.status(200).json({
-      message: `✅ ${plans.category.uz} bo'yicha ma'lumot muvaffaqiyatli yangilandi!`,
+      message: `✅ ${plans.category.oz} bo'yicha ma'lumot muvaffaqiyatli yangilandi!`,
       plans,
     });
   } catch (e) {
@@ -176,7 +176,7 @@ exports.remove = async (req, res) => {
     }
 
     res.status(200).json({
-      message: `${plans.category.uz} bo'yicha ma'lumot muvaffaqiyatli o'chirildi!`
+      message: `${plans.category.oz} bo'yicha ma'lumot muvaffaqiyatli o'chirildi!`
     });
   } catch (e) {
     res.status(500).json({ message: "Serverda xatolik", error: e.message });

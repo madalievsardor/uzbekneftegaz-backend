@@ -1,6 +1,7 @@
 const leaderShipModel = require("../models/leaderModel");
 const mongoose = require("mongoose");
-
+const path = require("path");
+const fs = require("fs")
 exports.create = async (req, res) => {
   try {
     const {
@@ -134,7 +135,7 @@ exports.update = async (req, res) => {
         const oldPath = path.join(__dirname, "..", leader.avatar);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
-      leader.avatar = `/uploads/leaders/${req.file.filename}`;
+      leader.avatar = `${req.file.filename}`;
     }
 
     // ✅ Har bir maydonni yangilaymiz
