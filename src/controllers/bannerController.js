@@ -62,15 +62,15 @@ exports.getById = async (req, res) => {
 
     // ✅ ID formatini tekshiramiz
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "❌ Noto'g'ri ID format" });
+      return res.status(400).json({ message: "Noto'g'ri ID format" });
     }
 
     const banner = await bannerModel.findById(id);
     if (!banner) {
-      return res.status(404).json({ message: "❌ Banner topilmadi" });
+      return res.status(404).json({ message: "Banner topilmadi" });
     }
 
-    res.status(200).json({ message: "✅ Banner topildi", data: banner });
+    res.status(200).json({ message: "Banner topildi", data: banner });
   } catch (e) {
     res.status(500).json({ message: "Server xatosi", error: e.message });
   }
