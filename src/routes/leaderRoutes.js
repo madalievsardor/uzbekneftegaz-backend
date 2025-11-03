@@ -125,6 +125,7 @@ router.get("/", getAllLeader);
  *           schema:
  *             type: object
  *             properties:
+ *               # Ism familiya
  *               fullName_uz:
  *                 type: string
  *                 example: Aliyev Azizbek
@@ -134,6 +135,8 @@ router.get("/", getAllLeader);
  *               fullName_ru:
  *                 type: string
  *                 example: Алиев Азизбек
+
+ *               # Lavozimi
  *               grade_uz:
  *                 type: string
  *                 example: Direktor
@@ -143,16 +146,22 @@ router.get("/", getAllLeader);
  *               grade_ru:
  *                 type: string
  *                 example: Директор
+
+ *               # Aloqa ma'lumotlari
  *               phone:
  *                 type: string
  *                 example: +998901234567
  *               email:
  *                 type: string
  *                 example: azizbek@company.uz
+
+ *               # Rasm yuklash (fayl)
  *               avatar:
  *                 type: string
  *                 format: binary
  *                 description: Rahbar rasmi (jpg/png)
+
+ *               # Ish kuni
  *               workDays_uz:
  *                 type: string
  *                 example: Dushanba - Juma
@@ -162,12 +171,16 @@ router.get("/", getAllLeader);
  *               workDays_ru:
  *                 type: string
  *                 example: Понедельник - Пятница
+
+ *               # Ish vaqti
  *               workHours_start:
  *                 type: string
  *                 example: "09:00"
  *               workHours_end:
  *                 type: string
  *                 example: "18:00"
+
+ *               # Tavsif
  *               description_uz:
  *                 type: string
  *                 example: 10 yillik tajribaga ega rahbar.
@@ -188,6 +201,7 @@ router.get("/", getAllLeader);
  *         description: ❌ Server xatosi
  */
 router.put("/update/:id", verifyToken, upload.single("avatar"), update);
+
 
 
 

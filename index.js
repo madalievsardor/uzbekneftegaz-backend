@@ -16,7 +16,8 @@ const honoraryRoutes = require("./src/routes/honoraryRoutes");
 const tarkibiyBolimRoutes = require("./src/routes/tarkibiyBolimRoutes");
 const newsRoutes = require("./src/routes/newsRoutes");
 const localNewsRoutes = require("./src/routes/localNewsRoutes");
-const industryNewsRoutes = require("./src/routes/industryNewsRoutes")
+const industryNewsRoutes = require("./src/routes/industryNewsRoutes");
+const plansReportsRoutes = require("./src/routes/plansReportsRoutes")
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
@@ -39,13 +40,14 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/auth", authRoutes);
 app.use("/api/banner", bannerRoutes);
 app.use("/api/leader", leaderRoutes);
-app.use("/api/vacancies", vacancyRoutes)
-app.use("/api/normative", normativRoutes)
-app.use("/api/honorary", honoraryRoutes)
-app.use("/api/bolimlar", tarkibiyBolimRoutes)
-app.use("/api/news", newsRoutes)
-app.use("/api/localNews", localNewsRoutes)
-app.use("/api/industryNews", industryNewsRoutes)
+app.use("/api/vacancies", vacancyRoutes);
+app.use("/api/normative", normativRoutes);
+app.use("/api/honorary", honoraryRoutes);
+app.use("/api/bolimlar", tarkibiyBolimRoutes);
+app.use("/api/news", newsRoutes);
+app.use("/api/localNews", localNewsRoutes);
+app.use("/api/industryNews", industryNewsRoutes);
+app.use("/api/plans-reports", plansReportsRoutes)
 // Statik fayllar
 // Statik fayllar
 app.use("/uploads/banners", express.static(path.join(__dirname, "src", "uploads", "banners")));
