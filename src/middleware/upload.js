@@ -45,20 +45,37 @@ const storage = multer.diskStorage({
   },
 });
 
-// 🔸 Ruxsat berilgan fayl turlari
 const allowedTypes = [
-  "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif",
-  "video/mp4", "video/mov", "video/avi", "video/mpeg", "video/webm",
-  "application/pdf", "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/zip", "application/x-zip-compressed",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+
+  "video/mp4",
+  "video/mov",
+  "video/avi",
+  "video/mpeg",
+  "video/webm",
+
+  "application/pdf",
+  "application/msword", // .doc
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+  "application/vnd.ms-excel", // .xls
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+  "text/plain",
+  "application/rtf",
+
+  "application/zip",
+  "application/x-zip-compressed",
+  "application/x-coreldraw",
+  "image/x-coreldraw",
+  "application/vnd.corel-draw",
 ];
 
 const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) cb(null, true);
-  else cb(new Error("❌ Faqat rasm, video yoki hujjat (PDF, DOCX, ZIP, XLSX) fayllarni yuklash mumkin!"), false);
+  else cb(new Error("Faqat rasm, video yoki hujjat (PDF, DOCX, ZIP, XLSX) fayllarni yuklash mumkin!"), false);
 };
 
 // ⚙️ Yakuniy upload sozlamalari

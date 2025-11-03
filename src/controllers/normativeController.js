@@ -102,40 +102,99 @@ exports.getById = async (req, res) => {
   }
 };
 
-/**
- * ✏️ Yangilash
- */
 exports.update = async (req, res) => {
   try {
-    const { title, decree, description } = req.body;
     const document = await NormativeDocument.findById(req.params.id);
 
     if (!document) {
-      return res.status(404).json({ message: "Hujjat topilmadi!" });
+      return res.status(404).json({ message: "❌ Hujjat topilmadi!" });
     }
 
-    // Agar yangi fayl yuklansa, eski faylni o‘chiramiz
+    // body dan qiymatlarni olamiz
+    const {
+      title_uz,
+      title_ru,
+      title_oz,
+      decree_uz,
+      decree_ru,
+      decree_oz,
+      description_uz,
+      description_ru,
+      description_oz,
+    } = req.body;
+
     if (req.file) {
+      const allowedMimeTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/zip",
+        "application/x-coreldraw", 
+        "image/x-coreldraw",
+      ];
+
+      if (!allowedMimeTypes.includes(req.file.mimetype)) {
+        const uploadedPath = path.join(__dirname, "../uploads/files", req.file.filename);
+        if (fs.existsSync(uploadedPath)) fs.unlinkSync(uploadedPath);
+        return res.status(400).json({
+          message:
+            "Faqat hujjat fayllarini (PDF, DOC, DOCX, XLS, XLSX, ZIP, CDR) yuklash mumkin!",
+        });
+      }
+
+      // Eski faylni o‘chirish
       const oldFilePath = path.join(__dirname, "../uploads/files", document.file);
-      if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
+      if (fs.existsSync(oldFilePath)) {
+        try {
+          fs.unlinkSync(oldFilePath);
+        } catch (err) {
+          console.warn("⚠️ Eski faylni o‘chirishda xatolik:", err.message);
+        }
+      }
+
       document.file = req.file.filename;
       document.fileType = req.file.mimetype;
     }
 
-    // Faqat kiritilgan qiymatlarni yangilaymiz
-    if (title) document.title = JSON.parse(title);
-    if (decree) document.decree = JSON.parse(decree);
-    if (description) document.description = JSON.parse(description);
+    // 🔹 Har bir tildagi matnlarni yangilash (agar yuborilgan bo‘lsa)
+    if (title_uz || title_ru || title_oz) {
+      document.title = {
+        uz: title_uz || document.title.uz,
+        ru: title_ru || document.title.ru,
+        oz: title_oz || document.title.oz,
+      };
+    }
+
+    if (decree_uz || decree_ru || decree_oz) {
+      document.decree = {
+        uz: decree_uz || document.decree.uz,
+        ru: decree_ru || document.decree.ru,
+        oz: decree_oz || document.decree.oz,
+      };
+    }
+
+    if (description_uz || description_ru || description_oz) {
+      document.description = {
+        uz: description_uz || document.description.uz,
+        ru: description_ru || document.description.ru,
+        oz: description_oz || document.description.oz,
+      };
+    }
 
     await document.save();
 
     res.status(200).json({
-      message: "Hujjat muvaffaqiyatli yangilandi ✅",
+      message: "✅ Hujjat muvaffaqiyatli yangilandi!",
       data: document,
     });
   } catch (error) {
     console.error("❌ Yangilash xatosi:", error);
-    res.status(500).json({ message: "Yangilashda xatolik yuz berdi", error });
+    res.status(500).json({
+      message: "❌ Hujjatni yangilashda xatolik yuz berdi!",
+      error: error.message,
+    });
   }
 };
 
