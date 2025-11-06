@@ -3,9 +3,6 @@ const path = require("path");
 const fs = require("fs");
 const { default: mongoose } = require("mongoose");
 
-/**
- * 📤 Yangi normativ hujjat yaratish
- */
 exports.create = async (req, res) => {
   try {
     const {
@@ -20,12 +17,10 @@ exports.create = async (req, res) => {
       description_oz,
     } = req.body;
 
-    // Fayl yo‘qligini tekshiramiz
     if (!req.file) {
       return res.status(400).json({ message: "Fayl yuklanmagan!" });
     }
 
-    // Majburiy maydonlarni tekshirish
     if (!title_uz || !decree_uz || !description_uz) {
       return res.status(400).json({
         message:
@@ -34,7 +29,6 @@ exports.create = async (req, res) => {
       });
     }
 
-    // Yangi hujjat yaratish
     const newDocument = new NormativeDocument({
       title: {
         uz: title_uz,
@@ -71,9 +65,7 @@ exports.create = async (req, res) => {
 };
 
 
-/**
- * 📚 Barcha hujjatlar
- */
+
 exports.getAll = async (req, res) => {
   try {
     const documents = await NormativeDocument.find().sort({ createdAt: -1 });

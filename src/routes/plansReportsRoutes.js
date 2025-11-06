@@ -1,26 +1,14 @@
+// routes/plansReportsRoutes.js
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../middleware/authMiddleware")
-const {
-    create,
-    getAll,
-    getById,
-    update,
-    remove,
-  } = require("../controllers/plansReportsController");
+const plansReportsController = require("../controllers/plansReportsController");
 
+// 🟢 Create
 /**
  * @swagger
- * tags:
- *   name: PlansReports
- *   description: Rejalar va hisobotlar bo‘yicha API'lar
- */
-
-/**
- * @swagger
- * /plans-reports:
+ * /plansReports:
  *   post:
- *     summary: Reja yoki hisobot yaratish
+ *     summary: Reja yoki Hisobot yaratish (uz, ru, oz tillarda)
  *     tags: [PlansReports]
  *     requestBody:
  *       required: true
@@ -29,45 +17,18 @@ const {
  *           schema:
  *             type: object
  *             properties:
- *               startMoth_uz:
+ *               startMonth_uz:
  *                 type: string
- *                 example: "Январ"
- *               startMoth_ru:
+ *               startMonth_ru:
  *                 type: string
- *                 example: "Январь"
- *               startMoth_oz:
+ *               startMonth_oz:
  *                 type: string
- *                 example: "Yanvar"
- *               endMoth_uz:
+ *               endMonth_uz:
  *                 type: string
- *                 example: "Март"
- *               endMoth_ru:
+ *               endMonth_ru:
  *                 type: string
- *                 example: "Март"
- *               endMoth_oz:
+ *               endMonth_oz:
  *                 type: string
- *                 example: "Mart"
- *               title_uz:
- *                 type: string
- *                 example: "I chorak reja"
- *               title_ru:
- *                 type: string
- *                 example: "План на 1 квартал"
- *               title_oz:
- *                 type: string
- *                 example: "I chorak reja"
- *               description_uz:
- *                 type: string
- *                 example: "Январ-март ойлари учун режа"
- *               description_ru:
- *                 type: string
- *                 example: "План на январь-март"
- *               description_oz:
- *                 type: string
- *                 example: "Yanvar-mart oylari uchun reja"
- *               participantsCount:
- *                 type: integer
- *                 example: 25
  *               category_uz:
  *                 type: string
  *                 enum: ["Режа", "Хисобот"]
@@ -77,69 +38,59 @@ const {
  *               category_oz:
  *                 type: string
  *                 enum: ["Reja", "Hisobot"]
+ *               title_uz:
+ *                 type: string
+ *               title_ru:
+ *                 type: string
+ *               title_oz:
+ *                 type: string
+ *               description_uz:
+ *                 type: string
+ *               description_ru:
+ *                 type: string
+ *               description_oz:
+ *                 type: string
+ *               participantsCount:
+ *                 type: number
  *     responses:
  *       201:
- *         description: Yangi reja yoki hisobot yaratildi
+ *         description: Reja yoki Hisobot muvaffaqiyatli yaratildi
  *       400:
- *         description: Maydonlar to‘ldirilmagan
+ *         description: Majburiy maydonlar to'ldirilmagan yoki noto'g'ri ma'lumot
  *       500:
  *         description: Server xatosi
  */
-router.post("/", verifyToken,  create);
+router.post("/", plansReportsController.create);
 
+// 🟢 Get All
 /**
  * @swagger
- * /plans-reports:
+ * /plansReports:
  *   get:
- *     summary: Barcha rejalar va hisobotlarni olish
+ *     summary: Barcha reja va hisobotlarni olish
  *     tags: [PlansReports]
  *     responses:
  *       200:
- *         description: Barcha rejalar ro‘yxati
+ *         description: Barcha reja va hisobotlar
  *       500:
  *         description: Server xatosi
  */
-router.get("/", getAll);
+router.get("/", plansReportsController.getAll);
 
+// 🟢 Update
 /**
  * @swagger
- * /plans-reports/{id}:
- *   get:
- *     summary: ID orqali reja yoki hisobotni olish
- *     tags: [PlansReports]
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: Reja yoki hisobotning ID si
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Topilgan reja yoki hisobot
- *       400:
- *         description: Noto‘g‘ri ID formati
- *       404:
- *         description: Ma’lumot topilmadi
- *       500:
- *         description: Server xatosi
- */
-router.get("/:id", getById);
-
-/**
- * @swagger
- * /plans-reports/{id}:
+ * /plansReports/{id}:
  *   put:
- *     summary: Reja yoki hisobotni yangilash (uz, ru, oz tillarda)
+ *     summary: Reja yoki Hisobotni yangilash
  *     tags: [PlansReports]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: Yangilanadigan ma’lumot ID si
+ *         description: Yangilanishi kerak bo'lgan reja/hisobot ID
  *         schema:
  *           type: string
- *           example: 6726123b8c8a53a44d5a7c9a
  *     requestBody:
  *       required: true
  *       content:
@@ -147,91 +98,77 @@ router.get("/:id", getById);
  *           schema:
  *             type: object
  *             properties:
- *               startMoth_uz:
+ *               startMonth_uz:
  *                 type: string
- *                 example: "Январ"
- *               startMoth_ru:
+ *               startMonth_ru:
  *                 type: string
- *                 example: "Январь"
- *               startMoth_oz:
+ *               startMonth_oz:
  *                 type: string
- *                 example: "Yanvar"
- *               endMoth_uz:
+ *               endMonth_uz:
  *                 type: string
- *                 example: "Март"
- *               endMoth_ru:
+ *               endMonth_ru:
  *                 type: string
- *                 example: "Март"
- *               endMoth_oz:
+ *               endMonth_oz:
  *                 type: string
- *                 example: "Mart"
- *               title_uz:
- *                 type: string
- *                 example: "Yangilangan reja"
- *               title_ru:
- *                 type: string
- *                 example: "Обновленный план"
- *               title_oz:
- *                 type: string
- *                 example: "Yangilangan reja"
- *               description_uz:
- *                 type: string
- *                 example: "Yangilangan izoh (O‘zbekcha)"
- *               description_ru:
- *                 type: string
- *                 example: "Обновленное описание (Русский)"
- *               description_oz:
- *                 type: string
- *                 example: "Yangilangan izoh (Lotincha)"
- *               participantsCount:
- *                 type: integer
- *                 example: 30
  *               category_uz:
  *                 type: string
  *                 enum: ["Режа", "Хисобот"]
- *                 example: "Режа"
  *               category_ru:
  *                 type: string
  *                 enum: ["План", "Отчет"]
- *                 example: "План"
  *               category_oz:
  *                 type: string
  *                 enum: ["Reja", "Hisobot"]
- *                 example: "Reja"
+ *               title_uz:
+ *                 type: string
+ *               title_ru:
+ *                 type: string
+ *               title_oz:
+ *                 type: string
+ *               description_uz:
+ *                 type: string
+ *               description_ru:
+ *                 type: string
+ *               description_oz:
+ *                 type: string
+ *               participantsCount:
+ *                 type: number
  *     responses:
  *       200:
- *         description:  Muvaffaqiyatli yangilandi
+ *         description: Reja yoki Hisobot muvaffaqiyatli yangilandi
  *       400:
- *         description:  Noto‘g‘ri so‘rov
+ *         description: Noto'g'ri so'rov
  *       404:
- *         description: Ma’lumot topilmadi
+ *         description: Reja/hisobot topilmadi
  *       500:
- *         description:  Server xatosi
+ *         description: Server xatosi
  */
-router.put("/:id", verifyToken,  update);
+router.put("/:id", plansReportsController.update);
 
-
+// 🟢 Delete
 /**
  * @swagger
- * /plans-reports/{id}:
+ * /plansReports/{id}:
  *   delete:
- *     summary: Reja yoki hisobotni o‘chirish
+ *     summary: Reja yoki Hisobotni o'chirish
  *     tags: [PlansReports]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: O‘chiriladigan ma’lumot ID si
+ *         description: O'chirilishi kerak bo'lgan reja/hisobot ID
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Muvaffaqiyatli o‘chirildi
+ *         description: Reja yoki Hisobot muvaffaqiyatli o'chirildi
+ *       400:
+ *         description: Noto'g'ri ID format
  *       404:
- *         description: Topilmadi
+ *         description: Reja/hisobot topilmadi
  *       500:
  *         description: Server xatosi
  */
-router.delete("/:id", verifyToken, remove);
+router.delete("/:id", plansReportsController.remove);
 
 module.exports = router;

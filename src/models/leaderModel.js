@@ -18,8 +18,8 @@ const leaderShipSchema = new mongoose.Schema({
         default: "/assets/leader.png"
     },
     workDays: {
-        uz: { type: String, required: true, example: "Dushanba - Juma" },
-        oz: { type: String, required: true, example: "Душанба - Жума" },
+        uz: { type: String, required: true, example: "Душанба - Жума" },
+        oz: { type: String, required: true, example: "Dushanba - Juma" },
         ru: { type: String, required: true, example: "Понедельник - Пятница" }
     },
     workHours: {

@@ -47,7 +47,7 @@ app.use("/api/bolimlar", tarkibiyBolimRoutes);
 app.use("/api/news", newsRoutes);
 app.use("/api/localNews", localNewsRoutes);
 app.use("/api/industryNews", industryNewsRoutes);
-app.use("/api/plans-reports", plansReportsRoutes)
+app.use("/api/plansReports", plansReportsRoutes)
 // Statik fayllar
 // Statik fayllar
 app.use("/uploads/banners", express.static(path.join(__dirname, "src", "uploads", "banners")));
