@@ -56,6 +56,7 @@ app.use("/uploads/news", express.static(path.join(__dirname, "src", "uploads", "
 app.use("/uploads/honorary", express.static(path.join(__dirname, "src", "uploads", "honorary")));
 app.use("/uploads/localNews", express.static(path.join(__dirname, "src", "uploads", "localNews")));
 app.use("/uploads/industryNews", express.static(path.join(__dirname, "src", "uploads", "industryNews")));
+app.use("/uploads/leaders", express.static(path.join(__dirname, "src", "uploads", "leaders")))
 app.use("/assets", express.static(path.join(__dirname, "src/assets/images")));
 
 

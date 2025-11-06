@@ -102,7 +102,7 @@ const {
  *                   oz:
  *                     type: string
  *                     enum: ["Тўлиқ ставка", "Ярим ставка"]
- *                     example: Full-time
+ *                     example: Тўлиқ ставка
  *     responses:
  *       201:
  *         description: Vakansiya muvaffaqiyatli yaratildi

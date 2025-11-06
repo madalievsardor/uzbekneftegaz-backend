@@ -132,40 +132,63 @@ router.get("/:id", normativeDocumentController.getById);
  * @swagger
  * /normative/update/{id}:
  *   put:
- *     summary: Normativ hujjatni yangilash (fayl majburiy emas)
+ *     summary: Normativ hujjatni yangilash (uz, oz, ru tillarda)
  *     tags: [NormativeDocument]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: Yangilanayotgan hujjat ID si
+ *         description: Hujjatning ID si
  *         schema:
  *           type: string
+ *           example: 6726a1f87c3bfa06c8f4d999
  *     requestBody:
- *       required: false
+ *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
+ *               title_uz:
+ *                 type: string
+ *                 example: "O‘zbekiston Respublikasi Qonuni"
+ *               title_oz:
+ *                 type: string
+ *                 example: "Ўзбекистон Республикаси Қонуни"
+ *               title_ru:
+ *                 type: string
+ *                 example: "Закон Республики Узбекистан"
+ *               decree_uz:
+ *                 type: string
+ *                 example: "Prezident qarori №123"
+ *               decree_oz:
+ *                 type: string
+ *                 example: "Президент қарори №123"
+ *               decree_ru:
+ *                 type: string
+ *                 example: "Постановление Президента №123"
+ *               description_uz:
+ *                 type: string
+ *                 example: "Bu hujjat yangi me'yoriy tartibni belgilaydi."
+ *               description_oz:
+ *                 type: string
+ *                 example: "Бу ҳужжат янги меъёрий тартибни белгилайди."
+ *               description_ru:
+ *                 type: string
+ *                 example: "Этот документ определяет новый нормативный порядок."
  *               file:
  *                 type: string
  *                 format: binary
- *                 description: Yangi yuklanadigan fayl
- *               title:
- *                 type: string
- *                 description: JSON formatda — {"uz":"...", "ru":"...", "oz":"..."}
- *               decree:
- *                 type: string
- *               description:
- *                 type: string
+ *                 description: Yangi fayl (agar yuklansa)
  *     responses:
  *       200:
- *         description: Hujjat yangilandi
+ *         description: ✅ Hujjat muvaffaqiyatli yangilandi
+ *       400:
+ *         description: ❌ Noto‘g‘ri ID yoki ma'lumotlar
  *       404:
- *         description: Hujjat topilmadi
+ *         description: ❌ Hujjat topilmadi
  *       500:
- *         description: Server xatosi
+ *         description: ❌ Server xatosi
  */
 router.put(
   "/update/:id", verifyToken,

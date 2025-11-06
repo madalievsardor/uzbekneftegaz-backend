@@ -80,35 +80,78 @@ exports.getById = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description } = req.body;
 
+    // ID ni tekshirish
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Noto'g'ri ID formati!" });
+      return res.status(400).json({ message: "❌ Noto‘g‘ri ID format!" });
     }
 
-    const banner = await bannerModel.findById(id);
-    if (!banner) return res.status(404).json({ message: "Banner topilmadi!" });
+    const document = await NormativeDocument.findById(id);
+    if (!document) {
+      return res.status(404).json({ message: "❌ Hujjat topilmadi!" });
+    }
 
-    // Agar fayl yuklangan bo'lsa
+    // --- 1️⃣ Fayl yangilansa ---
     if (req.file) {
-      // Eski faylni o'chirish
-      if (banner.file) {
-        const oldPath = path.join(__dirname, "../uploads/banners", banner.file);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
-      banner.file = req.file.filename;
+      const oldFilePath = path.join(__dirname, "../uploads/files", document.file);
+      if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
+
+      document.file = req.file.filename;
+      document.fileType = req.file.mimetype;
     }
 
-    // Title va description yangilash
-    banner.title = title || banner.title;
-    banner.description = description || banner.description;
+    // --- 2️⃣ Matnli maydonlarni (tillar bilan) yangilaymiz ---
+    const {
+      title_uz,
+      title_oz,
+      title_ru,
+      decree_uz,
+      decree_oz,
+      decree_ru,
+      description_uz,
+      description_oz,
+      description_ru,
+    } = req.body;
 
-    await banner.save();
+    // title
+    if (title_uz || title_oz || title_ru) {
+      document.title = {
+        uz: title_uz || document.title.uz,
+        oz: title_oz || document.title.oz,
+        ru: title_ru || document.title.ru,
+      };
+    }
 
-    res.status(200).json({ message: "Banner muvaffaqiyatli yangilandi ✅", banner });
+    // decree
+    if (decree_uz || decree_oz || decree_ru) {
+      document.decree = {
+        uz: decree_uz || document.decree.uz,
+        oz: decree_oz || document.decree.oz,
+        ru: decree_ru || document.decree.ru,
+      };
+    }
+
+    // description
+    if (description_uz || description_oz || description_ru) {
+      document.description = {
+        uz: description_uz || document.description.uz,
+        oz: description_oz || document.description.oz,
+        ru: description_ru || document.description.ru,
+      };
+    }
+
+    await document.save();
+
+    res.status(200).json({
+      message: "✅ Hujjat muvaffaqiyatli yangilandi",
+      data: document,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server xatosi", error: error.message });
+    console.error("❌ Yangilash xatosi:", error);
+    res.status(500).json({
+      message: "❌ Yangilashda xatolik yuz berdi",
+      error: error.message,
+    });
   }
 };
 
