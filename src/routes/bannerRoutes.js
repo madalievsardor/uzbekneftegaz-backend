@@ -63,7 +63,12 @@ const {
  *       500:
  *         description: Server xatosi
  */
-router.post("/upload", verifyToken,  upload.single("file"), create);
+router.post("/upload", verifyToken, (req, res, next) => {
+  upload.single("file")(req, res, (err) => {
+    if(err) return res.status(400).json({ message: err.message });
+    next(); // create controller chaqiriladi
+  });
+}, create);
 
 /**
  * @swagger
@@ -151,7 +156,14 @@ router.get("/:id", getById);
  *       500:
  *         description: Server xatosi
  */
-router.put("/update/:id", verifyToken, upload.single("file"), update);
+router.put("/update/:id", verifyToken, (req, res, next) => {
+  upload.single("file") (req, res, (err) => {
+    if(err) {
+      return res.status(400).json({message: err.message})
+    }
+    next();
+  })
+}, update);
 
 /**
  * @swagger

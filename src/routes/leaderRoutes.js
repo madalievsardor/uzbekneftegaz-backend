@@ -87,7 +87,14 @@ const { verifyToken } = require("../middleware/authMiddleware")
  *       400:
  *         description: Noto‘g‘ri ma’lumot yoki yetishmayotgan maydon
  */
-router.post("/create", verifyToken, upload.single("avatar"), create);
+router.post("/create", verifyToken, (req, res, next) => {
+  upload.single("avatar") (req, res, (err) => {
+    if(err) {
+      return res.status(400).json({message: err.message})
+    }
+    next()
+  })
+}, create);
 
 /**
  * @swagger
@@ -192,15 +199,22 @@ router.get("/", getAllLeader);
  *                 example: Руководитель с 10-летним опытом.
  *     responses:
  *       200:
- *         description: ✅ Rahbar muvaffaqiyatli yangilandi
+ *         description: Rahbar muvaffaqiyatli yangilandi
  *       400:
- *         description: ❌ Noto‘g‘ri so‘rov
+ *         description: Noto‘g‘ri so‘rov
  *       404:
- *         description: ❌ Rahbar topilmadi
+ *         description: Rahbar topilmadi
  *       500:
- *         description: ❌ Server xatosi
+ *         description: Server xatosi
  */
-router.put("/update/:id", verifyToken, upload.single("avatar"), update);
+router.put("/update/:id", verifyToken, (req, res, next) => {
+  upload.single("avatar") (req, res, (err) => {
+    if(err) {
+      return res.status(400).json({message: err.message})
+    }
+    next()
+  })
+}, update);
 
 
 

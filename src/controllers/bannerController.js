@@ -81,70 +81,55 @@ exports.update = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // ID ni tekshirish
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "❌ Noto‘g‘ri ID format!" });
     }
 
-    const document = await NormativeDocument.findById(id);
-    if (!document) {
+    const banner = await bannerModel.findById(id);
+    if (!banner) {
       return res.status(404).json({ message: "❌ Hujjat topilmadi!" });
     }
 
-    // --- 1️⃣ Fayl yangilansa ---
+    // --- Fayl yangilanishi ---
     if (req.file) {
-      const oldFilePath = path.join(__dirname, "../uploads/files", document.file);
+      const oldFilePath = path.join(__dirname, "../uploads/banners", banner.file);
       if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
 
-      document.file = req.file.filename;
-      document.fileType = req.file.mimetype;
+      banner.file = req.file.filename;
+      banner.mediaType = req.file.mimetype.startsWith("video/") ? "video" : "image";
     }
 
-    // --- 2️⃣ Matnli maydonlarni (tillar bilan) yangilaymiz ---
-    const {
-      title_uz,
-      title_oz,
-      title_ru,
-      decree_uz,
-      decree_oz,
-      decree_ru,
-      description_uz,
-      description_oz,
-      description_ru,
-    } = req.body;
+    const { title_uz, title_ru, title_oz, description_uz, description_ru, description_oz } = req.body;
 
-    // title
-    if (title_uz || title_oz || title_ru) {
-      document.title = {
-        uz: title_uz || document.title.uz,
-        oz: title_oz || document.title.oz,
-        ru: title_ru || document.title.ru,
+    // --- title yangilash ---
+    if (title_uz || title_ru || title_oz) {
+      if (!title_uz || title_uz.trim() === "") {
+        return res.status(400).json({ message: "❌ title_uz majburiy!" });
+      }
+      banner.title = {
+        uz: title_uz || banner.title.uz,
+        ru: title_ru || banner.title.ru,
+        oz: title_oz || banner.title.oz,
       };
     }
 
-    // decree
-    if (decree_uz || decree_oz || decree_ru) {
-      document.decree = {
-        uz: decree_uz || document.decree.uz,
-        oz: decree_oz || document.decree.oz,
-        ru: decree_ru || document.decree.ru,
+    // --- description yangilash ---
+    if (description_uz || description_ru || description_oz) {
+      if (!description_uz || description_uz.trim() === "") {
+        return res.status(400).json({ message: "❌ description_uz majburiy!" });
+      }
+      banner.description = {
+        uz: description_uz || banner.description.uz,
+        ru: description_ru || banner.description.ru,
+        oz: description_oz || banner.description.oz,
       };
     }
 
-    // description
-    if (description_uz || description_oz || description_ru) {
-      document.description = {
-        uz: description_uz || document.description.uz,
-        oz: description_oz || document.description.oz,
-        ru: description_ru || document.description.ru,
-      };
-    }
-
-    await document.save();
+    await banner.save();
 
     res.status(200).json({
       message: "✅ Hujjat muvaffaqiyatli yangilandi",
-      data: document,
+      data: banner,
     });
   } catch (error) {
     console.error("❌ Yangilash xatosi:", error);

@@ -32,18 +32,18 @@ exports.create = async (req, res) => {
     const newDocument = new NormativeDocument({
       title: {
         uz: title_uz,
-        ru: title_ru || "",
-        oz: title_oz || "",
+        ru: title_ru,
+        oz: title_oz,
       },
       decree: {
         uz: decree_uz,
-        ru: decree_ru || "",
-        oz: decree_oz || "",
+        ru: decree_ru,
+        oz: decree_oz,
       },
       description: {
         uz: description_uz,
-        ru: description_ru || "",
-        oz: description_oz || "",
+        ru: description_ru,
+        oz: description_oz,
       },
       file: req.file.filename,
       fileType: req.file.mimetype,

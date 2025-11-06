@@ -17,7 +17,9 @@ const tarkibiyBolimRoutes = require("./src/routes/tarkibiyBolimRoutes");
 const newsRoutes = require("./src/routes/newsRoutes");
 const localNewsRoutes = require("./src/routes/localNewsRoutes");
 const industryNewsRoutes = require("./src/routes/industryNewsRoutes");
-const plansReportsRoutes = require("./src/routes/plansReportsRoutes")
+const plansReportsRoutes = require("./src/routes/plansReportsRoutes");
+const xotinQizlarRoutes = require("./src/routes/xotinQizlarRoutes");
+const yoshlarSiyosatiRoutes = require("./src/routes/yoshlarSiyosatiRoutes");
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
@@ -47,7 +49,9 @@ app.use("/api/bolimlar", tarkibiyBolimRoutes);
 app.use("/api/news", newsRoutes);
 app.use("/api/localNews", localNewsRoutes);
 app.use("/api/industryNews", industryNewsRoutes);
-app.use("/api/plansReports", plansReportsRoutes)
+app.use("/api/plansReports", plansReportsRoutes);
+app.use("/api/xotinQizlar", xotinQizlarRoutes)
+app.use("/api/yoshlarSiyosati", yoshlarSiyosatiRoutes)
 // Statik fayllar
 // Statik fayllar
 app.use("/uploads/banners", express.static(path.join(__dirname, "src", "uploads", "banners")));
@@ -57,6 +61,8 @@ app.use("/uploads/honorary", express.static(path.join(__dirname, "src", "uploads
 app.use("/uploads/localNews", express.static(path.join(__dirname, "src", "uploads", "localNews")));
 app.use("/uploads/industryNews", express.static(path.join(__dirname, "src", "uploads", "industryNews")));
 app.use("/uploads/leaders", express.static(path.join(__dirname, "src", "uploads", "leaders")))
+app.use("/uploads/xotinQizlar", express.static(path.join(__dirname, "src", "uploads", "xotinQizlar")))
+app.use("/uploads/yoshlarSiyosati", express.static(path.join(__dirname, "src", "uploads", "yoshlarSiyosati")))
 app.use("/assets", express.static(path.join(__dirname, "src/assets/images")));
 
 

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { verifyToken } = require("../middleware/authMiddleware")
-const upload = require("../middleware/upload"); // multer fayl yuklash middleware
+const upload = require("../middleware/uploadDocument"); // multer fayl yuklash middleware
 const normativeDocumentController = require("../controllers/normativeController");
 
 /**

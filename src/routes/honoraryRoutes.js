@@ -92,8 +92,14 @@ const honoraryController = require("../controllers/hononaryController");
  *         description: Server xatolik
  */
 router.post(
-  "/create", verifyToken,
-  upload.single("image"),
+  "/create", verifyToken, (req, res, next) => {
+    upload.single("image")(req, res, (err) => {
+      if(err) {
+        return res.status(400).json({message: err.message})
+      }
+      next()
+    })
+  },
   honoraryController.create
 );
 
@@ -201,8 +207,14 @@ router.get("/:id",  honoraryController.getById);
  *         description: Server xatolik
  */
 router.put(
-  "/update/:id", verifyToken,
-  upload.single("image"),
+  "/update/:id", verifyToken, (req, res, next) => {
+    upload.single("image") (req, res, (err) => {
+      if(err) {
+        return res.status(400).json({message: err.message})
+      }
+      next()
+    })
+  },
   honoraryController.updateById
 );
 

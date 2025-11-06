@@ -9,7 +9,7 @@ const {
   update,
   remove,
 } = require("../controllers/industryController");
-
+const { verifyToken } = require("../middleware/authMiddleware")
 /**
  * @swagger
  * tags:
@@ -61,7 +61,14 @@ const {
  *       400:
  *         description: Xato yoki to‘ldirilmagan maydon
  */
-router.post("/", upload.array("images", 10), create);
+router.post("/", verifyToken, (req, res, next) => {
+  upload.array("images", 10) (req, res, (err) => {
+    if(err) {
+      return res.status(400).json({message: err.message})
+    }
+    next()
+  })
+} , create);
 
 /**
  * @swagger
@@ -140,7 +147,14 @@ router.get("/:id", getById);
  *       404:
  *         description: Yangilik topilmadi
  */
-router.put("/:id", upload.array("images", 10), update);
+router.put("/:id", verifyToken, (req, res, next) => {
+  upload.array("images", 10) (req, res, (err) => {
+    if(err) {
+      return res.status(400).json({message: err.message})
+    }
+    next()
+  })
+}, update);
 
 /**
  * @swagger
@@ -161,6 +175,6 @@ router.put("/:id", upload.array("images", 10), update);
  *       404:
  *         description: Yangilik topilmadi
  */
-router.delete("/:id", remove);
+router.delete("/:id", verifyToken, remove);
 
 module.exports = router;

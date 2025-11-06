@@ -57,25 +57,11 @@ const allowedTypes = [
   "video/avi",
   "video/mpeg",
   "video/webm",
-
-  "application/pdf",
-  "application/msword", // .doc
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
-  "application/vnd.ms-excel", // .xls
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-  "text/plain",
-  "application/rtf",
-
-  "application/zip",
-  "application/x-zip-compressed",
-  "application/x-coreldraw",
-  "image/x-coreldraw",
-  "application/vnd.corel-draw",
 ];
 
 const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) cb(null, true);
-  else cb(new Error("Faqat rasm, video yoki hujjat (PDF, DOCX, ZIP, XLSX) fayllarni yuklash mumkin!"), false);
+  else cb(new Error("Faqat rasm, video fayllarni yuklash mumkin!"), false);
 };
 
 // ⚙️ Yakuniy upload sozlamalari
