@@ -7,7 +7,7 @@ const honoraryController = require("../controllers/hononaryController");
 /**
  * @swagger
  * tags:
- *   name: HonoraryOfficer
+ *   name: Faxriy hodimlar
  *   description: Faxriy xodimlar CRUD
  */
 
@@ -16,7 +16,7 @@ const honoraryController = require("../controllers/hononaryController");
  * /honorary/create:
  *   post:
  *     summary: Yangi faxriy xodim yaratish
- *     tags: [HonoraryOfficer]
+ *     tags: [Faxriy hodimlar]
  *     requestBody:
  *       required: true
  *       content:
@@ -102,7 +102,7 @@ router.post(
  * /honorary/:
  *   get:
  *     summary: Barcha faxriy xodimlarni olish
- *     tags: [HonoraryOfficer]
+ *     tags: [Faxriy hodimlar]
  *     responses:
  *       200:
  *         description: Barcha xodimlar
@@ -116,7 +116,7 @@ router.get("/", honoraryController.getAll);
  * /honorary/{id}:
  *   get:
  *     summary: ID orqali faxriy xodimni olish
- *     tags: [HonoraryOfficer]
+ *     tags: [Faxriy hodimlar]
  *     parameters:
  *       - in: path
  *         name: id
@@ -139,7 +139,7 @@ router.get("/:id",  honoraryController.getById);
  * /honorary/update/{id}:
  *   put:
  *     summary: Faxriy xodimni yangilash
- *     tags: [HonoraryOfficer]
+ *     tags: [Faxriy hodimlar]
  *     parameters:
  *       - in: path
  *         name: id
@@ -211,7 +211,7 @@ router.put(
  * /honorary/delete/{id}:
  *   delete:
  *     summary: Faxriy xodimni o‘chirish
- *     tags: [HonoraryOfficer]
+ *     tags: [Faxriy hodimlar]
  *     parameters:
  *       - in: path
  *         name: id

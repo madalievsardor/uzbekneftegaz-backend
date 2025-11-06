@@ -2,14 +2,14 @@
 const express = require("express");
 const router = express.Router();
 const plansReportsController = require("../controllers/plansReportsController");
-
+const { verifyToken } = require("../middleware/authMiddleware")
 // 🟢 Create
 /**
  * @swagger
  * /plansReports:
  *   post:
  *     summary: Reja yoki Hisobot yaratish (uz, ru, oz tillarda)
- *     tags: [PlansReports]
+ *     tags: [Rejalar va Hisobotlar]
  *     requestBody:
  *       required: true
  *       content:
@@ -60,7 +60,7 @@ const plansReportsController = require("../controllers/plansReportsController");
  *       500:
  *         description: Server xatosi
  */
-router.post("/", plansReportsController.create);
+router.post("/", verifyToken, plansReportsController.create);
 
 // 🟢 Get All
 /**
@@ -68,7 +68,7 @@ router.post("/", plansReportsController.create);
  * /plansReports:
  *   get:
  *     summary: Barcha reja va hisobotlarni olish
- *     tags: [PlansReports]
+ *     tags: [Rejalar va Hisobotlar]
  *     responses:
  *       200:
  *         description: Barcha reja va hisobotlar
@@ -83,7 +83,7 @@ router.get("/", plansReportsController.getAll);
  * /plansReports/{id}:
  *   put:
  *     summary: Reja yoki Hisobotni yangilash
- *     tags: [PlansReports]
+ *     tags: [Rejalar va Hisobotlar]
  *     parameters:
  *       - name: id
  *         in: path
@@ -143,7 +143,7 @@ router.get("/", plansReportsController.getAll);
  *       500:
  *         description: Server xatosi
  */
-router.put("/:id", plansReportsController.update);
+router.put("/:id", verifyToken, plansReportsController.update);
 
 // 🟢 Delete
 /**
@@ -151,7 +151,7 @@ router.put("/:id", plansReportsController.update);
  * /plansReports/{id}:
  *   delete:
  *     summary: Reja yoki Hisobotni o'chirish
- *     tags: [PlansReports]
+ *     tags: [Rejalar va Hisobotlar]
  *     parameters:
  *       - name: id
  *         in: path
@@ -169,6 +169,6 @@ router.put("/:id", plansReportsController.update);
  *       500:
  *         description: Server xatosi
  */
-router.delete("/:id", plansReportsController.remove);
+router.delete("/:id", verifyToken, plansReportsController.remove);
 
 module.exports = router;

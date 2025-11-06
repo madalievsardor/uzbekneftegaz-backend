@@ -11,7 +11,7 @@ const { verifyToken } = require("../middleware/authMiddleware")
 /**
  * @swagger
  * tags:
- *   name: Leader
+ *   name: Rahbariyat
  *   description: Рахбарлар (уз, оз, ру тилларда)
  */
 
@@ -20,7 +20,7 @@ const { verifyToken } = require("../middleware/authMiddleware")
  * /leader/create:
  *   post:
  *     summary: Yangi rahbar qo‘shish
- *     tags: [Leader]
+ *     tags: [Rahbariyat]
  *     consumes:
  *       - multipart/form-data
  *     requestBody:
@@ -94,7 +94,7 @@ router.post("/create", verifyToken, upload.single("avatar"), create);
  * /leader:
  *   get:
  *     summary: Барча раҳбарларни олиш
- *     tags: [Leader]
+ *     tags: [Rahbariyat]
  *     responses:
  *       200:
  *         description: Барча раҳбарлар рўйхати
@@ -109,7 +109,7 @@ router.get("/", getAllLeader);
  * /leader/update/{id}:
  *   put:
  *     summary: Rahbar ma'lumotlarini yangilash (uz, oz, ru tillarda)
- *     tags: [Leader]
+ *     tags: [Rahbariyat]
  *     parameters:
  *       - name: id
  *         in: path
@@ -210,7 +210,7 @@ router.put("/update/:id", verifyToken, upload.single("avatar"), update);
  * /leader/{id}:
  *   delete:
  *     summary: Раҳбарни ўчириш
- *     tags: [Leader]
+ *     tags: [Rahbariyat]
  *     parameters:
  *       - name: id
  *         in: path

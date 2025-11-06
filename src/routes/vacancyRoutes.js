@@ -12,7 +12,7 @@ const {
 /**
  * @swagger
  * tags:
- *   name: Vacancy
+ *   name: Bo'sh ish o'rinlari
  *   description: Vakansiyalar CRUD API
  */
 
@@ -21,7 +21,7 @@ const {
  * /vacancies:
  *   post:
  *     summary: Yangi vakansiya yaratish
- *     tags: [Vacancy]
+ *     tags: [Bo'sh ish o'rinlari]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -119,7 +119,7 @@ router.post("/", verifyToken, create);
  * /vacancies:
  *   get:
  *     summary: Barcha vakansiyalarni olish
- *     tags: [Vacancy]
+ *     tags: [Bo'sh ish o'rinlari]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -144,7 +144,7 @@ router.get("/", getAll);
  * /vacancies/{id}:
  *   get:
  *     summary: ID orqali vakansiyani olish
- *     tags: [Vacancy]
+ *     tags: [Bo'sh ish o'rinlari]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -175,7 +175,7 @@ router.get("/:id", getById);
  * /vacancies/{id}:
  *   put:
  *     summary: ID orqali vakansiyani yangilash
- *     tags: [Vacancy]
+ *     tags: [Bo'sh ish o'rinlari]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -237,7 +237,7 @@ router.put("/:id", verifyToken, update);
  * /vacancies/{id}:
  *   delete:
  *     summary: ID orqali vakansiyani o‘chirish
- *     tags: [Vacancy]
+ *     tags: [Bo'sh ish o'rinlari]
  *     security:
  *       - bearerAuth: []
  *     parameters:

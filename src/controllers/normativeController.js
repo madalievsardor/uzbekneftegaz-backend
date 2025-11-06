@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "Fayl yuklanmagan!" });
     }
-
+    
     if (!title_uz || !decree_uz || !description_uz) {
       return res.status(400).json({
         message:

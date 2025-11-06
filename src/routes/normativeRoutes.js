@@ -7,7 +7,7 @@ const normativeDocumentController = require("../controllers/normativeController"
 /**
  * @swagger
  * tags:
- *   name: NormativeDocument
+ *   name: Me'yoriy hujjatlar
  *   description: 🧾 Normativ hujjatlar uchun CRUD API
  */
 
@@ -16,7 +16,7 @@ const normativeDocumentController = require("../controllers/normativeController"
  * /normative/create:
  *   post:
  *     summary: Yangi normativ hujjat yaratish
- *     tags: [NormativeDocument]
+ *     tags: [Me'yoriy hujjatlar]
  *     requestBody:
  *       required: true
  *       content:
@@ -98,7 +98,7 @@ router.post(
  * /normative/all:
  *   get:
  *     summary: Barcha normativ hujjatlarni olish
- *     tags: [NormativeDocument]
+ *     tags: [Me'yoriy hujjatlar]
  *     responses:
  *       200:
  *         description: Hamma hujjatlar ro‘yxati
@@ -112,7 +112,7 @@ router.get("/all", normativeDocumentController.getAll);
  * /normative/{id}:
  *   get:
  *     summary: ID orqali bitta normativ hujjatni olish
- *     tags: [NormativeDocument]
+ *     tags: [Me'yoriy hujjatlar]
  *     parameters:
  *       - name: id
  *         in: path
@@ -133,7 +133,7 @@ router.get("/:id", normativeDocumentController.getById);
  * /normative/update/{id}:
  *   put:
  *     summary: Normativ hujjatni yangilash (uz, oz, ru tillarda)
- *     tags: [NormativeDocument]
+ *     tags: [Me'yoriy hujjatlar]
  *     parameters:
  *       - name: id
  *         in: path
@@ -201,7 +201,7 @@ router.put(
  * /normative/delete/{id}:
  *   delete:
  *     summary: Hujjatni o‘chirish
- *     tags: [NormativeDocument]
+ *     tags: [Me'yoriy hujjatlar]
  *     parameters:
  *       - name: id
  *         in: path
