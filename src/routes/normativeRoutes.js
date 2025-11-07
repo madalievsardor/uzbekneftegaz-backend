@@ -182,13 +182,13 @@ router.get("/:id", normativeDocumentController.getById);
  *                 description: Yangi fayl (agar yuklansa)
  *     responses:
  *       200:
- *         description: ✅ Hujjat muvaffaqiyatli yangilandi
+ *         description: Hujjat muvaffaqiyatli yangilandi
  *       400:
- *         description: ❌ Noto‘g‘ri ID yoki ma'lumotlar
+ *         description: Noto‘g‘ri ID yoki ma'lumotlar
  *       404:
- *         description: ❌ Hujjat topilmadi
+ *         description: Hujjat topilmadi
  *       500:
- *         description: ❌ Server xatosi
+ *         description: Server xatosi
  */
 router.put(
   "/update/:id", verifyToken,

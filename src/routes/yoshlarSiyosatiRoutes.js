@@ -96,7 +96,7 @@ router.post("/", verifyToken, (req, res, next) => {
  *       500:
  *         description: Server xatosi
  */
-router.get("/", verifyToken, getAll);
+router.get("/",  getAll);
 
 /**
  * @swagger
