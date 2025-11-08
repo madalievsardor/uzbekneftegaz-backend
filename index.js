@@ -42,7 +42,6 @@ app.use(cors({
 
 app.use(express.json());
 
-app.options("*", cors()); 
 
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
