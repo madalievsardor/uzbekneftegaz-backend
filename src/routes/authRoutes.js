@@ -1,6 +1,6 @@
 const express = require("express");
 const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
-const { register, login, getAllUsers, deleteUser, getById } = require("../controllers/authController");
+const { register, login, getAllUsers, deleteUser, makeAdmin, getById, updateUser } = require("../controllers/authController");
 const router = express.Router();
 
 /**
@@ -107,7 +107,7 @@ router.post("/login", login);
  *       500:
  *         description: Server xatoligi
  */
-router.get("/:id", verifyToken, getById);
+router.get("/:id", verifyToken, verifyToken, getById);
 
 
 /**
@@ -122,7 +122,119 @@ router.get("/:id", verifyToken, getById);
  *       500:
  *         description: Server error
  */
-router.get("/", verifyToken, verifyAdmin, getAllUsers);
+router.get("/", getAllUsers);
+
+/**
+ * @swagger
+ * /auth/{id}:
+ *   put:
+ *     summary: Update a user by ID
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "Yangi Foydalanuvchi"
+ *               phone:
+ *                 type: string
+ *                 example: "998901234567"
+ *               password:
+ *                 type: string
+ *                 example: "newpassword123"
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Foydalanuvchi muvaffaqiyatli yangilandi!
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     username:
+ *                       type: string
+ *                     phone:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *       400:
+ *         description: Invalid input or phone already exists
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.put("/:id", verifyToken, updateUser);
+
+
+/**
+ * @swagger
+ * /auth/make-admin:
+ *   post:
+ *     summary: Foydalanuvchini admin qilish
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "foydalanuvchi_ismi"
+ *     responses:
+ *       200:
+ *         description: Foydalanuvchi admin qilindi
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Foydalanuvchi admin qilindi!"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     username:
+ *                       type: string
+ *                     phone:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *       404:
+ *         description: Foydalanuvchi topilmadi
+ *       500:
+ *         description: Server xatosi
+ */
+router.post("/make-admin", verifyToken, verifyAdmin, makeAdmin);
 
 /**
  * @swagger

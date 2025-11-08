@@ -149,3 +149,54 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
+exports.makeAdmin = async (req, res) => {
+  try {
+    const { username } = req.body; // Foydalanuvchi username ni body dan olamiz
+    const user = await userModel.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
+    }
+
+    user.role = "admin";
+    await user.save();
+
+    res.json({ message: `${username} admin qilindi`, user });
+  } catch (err) {
+    res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { username, phone, password } = req.body;
+
+        const user = await userModel.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "Foydalanuvchi topilmadi!" });
+        }
+
+        if (username) user.username = username;
+        if (phone) user.phone = phone;
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            message: "Foydalanuvchi muvaffaqiyatli yangilandi!",
+            user: {
+                id: user._id,
+                username: user.username,
+                phone: user.phone,
+                role: user.role
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server xatosi!", error: err.message });
+    }
+};
