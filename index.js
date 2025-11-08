@@ -20,6 +20,7 @@ const industryNewsRoutes = require("./src/routes/industryNewsRoutes");
 const plansReportsRoutes = require("./src/routes/plansReportsRoutes");
 const xotinQizlarRoutes = require("./src/routes/xotinQizlarRoutes");
 const yoshlarSiyosatiRoutes = require("./src/routes/yoshlarSiyosatiRoutes");
+const genderRoutes = require("./src/routes/genderRoutes");
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
@@ -51,7 +52,8 @@ app.use("/api/localNews", localNewsRoutes);
 app.use("/api/industryNews", industryNewsRoutes);
 app.use("/api/plansReports", plansReportsRoutes);
 app.use("/api/xotinQizlar", xotinQizlarRoutes)
-app.use("/api/yoshlarSiyosati", yoshlarSiyosatiRoutes)
+app.use("/api/yoshlarSiyosati", yoshlarSiyosatiRoutes);
+app.use("/api/gender", genderRoutes)
 // Statik fayllar
 // Statik fayllar
 app.use("/uploads/banners", express.static(path.join(__dirname, "src", "uploads", "banners")));
@@ -63,6 +65,7 @@ app.use("/uploads/industryNews", express.static(path.join(__dirname, "src", "upl
 app.use("/uploads/leaders", express.static(path.join(__dirname, "src", "uploads", "leaders")))
 app.use("/uploads/xotinQizlar", express.static(path.join(__dirname, "src", "uploads", "xotinQizlar")))
 app.use("/uploads/yoshlarSiyosati", express.static(path.join(__dirname, "src", "uploads", "yoshlarSiyosati")))
+app.use("/uploads/gender", express.static(path.join(__dirname, "src", "uploads", "gender")))
 app.use("/assets", express.static(path.join(__dirname, "src/assets/images")));
 
 
