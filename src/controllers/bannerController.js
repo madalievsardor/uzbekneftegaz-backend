@@ -2,6 +2,7 @@ const bannerModel = require("../models/bannerModel");
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose")
+const cloudinary = require("../config/cloudinary");
 // 🟢 Banner yaratish
 exports.create = async (req, res) => {
   try {
@@ -10,42 +11,56 @@ exports.create = async (req, res) => {
     }
 
     const { title_uz, title_ru, title_oz, desc_uz, desc_ru, desc_oz } = req.body;
-    if(!title_uz) {
-      return res.status(400).json({message: "Sarlavha (Uz) mavburiy maydon"})
+
+    if (!title_uz) {
+      return res
+        .status(400)
+        .json({ message: "Sarlavha (Uz) majburiy maydon" });
     }
+
     const maxLength = 300;
     if (
       (title_uz && title_uz.length > maxLength) ||
       (title_ru && title_ru.length > maxLength) ||
       (title_oz && title_oz.length > maxLength)
     ) {
-      fs.unlinkSync(req.file.path);
-      return res.status(400).json({ message: `Sarlavha uzunligi ${maxLength} belgidan oshmasligi kerak` });
+      return res.status(400).json({
+        message: `Sarlavha uzunligi ${maxLength} belgidan oshmasligi kerak`,
+      });
     }
-    const mediaType = req.file.mimetype.startsWith("image") ? "image" : "video";
+
+    const mediaType = req.file.mimetype.startsWith("image")
+      ? "image"
+      : "video";
+
     const newBanner = new bannerModel({
-      file: req.file.filename,
+      file: req.file.path, 
+      public_id: req.file.filename, 
       title: {
         uz: title_uz,
         ru: title_ru,
-        oz: title_oz
+        oz: title_oz,
       },
       description: {
         uz: desc_uz,
         ru: desc_ru,
-        oz: desc_oz
+        oz: desc_oz,
       },
       mediaType,
     });
 
     await newBanner.save();
-    res.status(201).json({ message: "Banner yaratildi", banner: newBanner });
+
+    res.status(201).json({
+      message: "Ma'lumot muvaffaqiyatli joylandi!",
+      banner: newBanner,
+    });
   } catch (e) {
+    console.error("Banner yaratishda xato:", e);
     res.status(500).json({ message: "Server xatosi", error: e.message });
   }
 };
 
-// 🔵 Barcha bannerlarni olish
 exports.getAll = async (req, res) => {
   try {
     const banners = await bannerModel.find().sort({ createdAt: -1 });
@@ -55,12 +70,10 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// 🟣 Bitta banner (ID orqali)
 exports.getById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // ✅ ID formatini tekshiramiz
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Noto'g'ri ID format" });
     }
@@ -76,26 +89,32 @@ exports.getById = async (req, res) => {
   }
 };
 
-// 🟠 Banner yangilash (faylni ham o'zgartirish mumkin)
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "❌ Noto‘g‘ri ID format!" });
+      return res.status(400).json({ message: "Noto‘g‘ri ID format!" });
     }
 
     const banner = await bannerModel.findById(id);
     if (!banner) {
-      return res.status(404).json({ message: "❌ Hujjat topilmadi!" });
+      return res.status(404).json({ message: "Hujjat topilmadi!" });
     }
-
     // --- Fayl yangilanishi ---
     if (req.file) {
-      const oldFilePath = path.join(__dirname, "../uploads/banners", banner.file);
-      if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
+      // Agar eski fayl bo‘lsa, Cloudinary’dan o‘chirish
+      if (banner.public_id) {
+        await cloudinary.uploader.destroy(banner.public_id);
+      }
 
-      banner.file = req.file.filename;
+      // Yangi faylni Cloudinary’ga yuklash
+      const uploaded = await cloudinary.uploader.upload(req.file.path, {
+        resource_type: req.file.mimetype.startsWith("video/") ? "video" : "image",
+        folder: "banners",
+      });
+
+      banner.file = uploaded.secure_url;       // URL
+      banner.public_id = uploaded.public_id;  // Cloudinary public_id
       banner.mediaType = req.file.mimetype.startsWith("video/") ? "video" : "image";
     }
 
@@ -104,7 +123,7 @@ exports.update = async (req, res) => {
     // --- title yangilash ---
     if (title_uz || title_ru || title_oz) {
       if (!title_uz || title_uz.trim() === "") {
-        return res.status(400).json({ message: "❌ title_uz majburiy!" });
+        return res.status(400).json({ message: "title_uz majburiy!" });
       }
       banner.title = {
         uz: title_uz || banner.title.uz,
@@ -116,7 +135,7 @@ exports.update = async (req, res) => {
     // --- description yangilash ---
     if (description_uz || description_ru || description_oz) {
       if (!description_uz || description_uz.trim() === "") {
-        return res.status(400).json({ message: "❌ description_uz majburiy!" });
+        return res.status(400).json({ message: "description_uz majburiy!" });
       }
       banner.description = {
         uz: description_uz || banner.description.uz,
@@ -128,7 +147,7 @@ exports.update = async (req, res) => {
     await banner.save();
 
     res.status(200).json({
-      message: "✅ Hujjat muvaffaqiyatli yangilandi",
+      message: "Banner muvaffaqiyatli yangilandi",
       data: banner,
     });
   } catch (error) {
@@ -144,27 +163,20 @@ exports.remove = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // ✅ ID formatini tekshirish
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "❌ Noto'g'ri ID format" });
+      return res.status(400).json({ message: "Noto'g'ri ID format" });
     }
 
     const banner = await bannerModel.findById(id);
-    if (!banner) return res.status(404).json({ message: "❌ Banner topilmadi" });
+    if (!banner) return res.status(404).json({ message: "Banner topilmadi" });
 
-    // ✅ Faylni o'chirish
-    const filePath = path.join(__dirname, "../uploads/banner", banner.file);
-    if (fs.existsSync(filePath)) {
-      try {
-        fs.unlinkSync(filePath);
-      } catch (err) {
-        console.warn("⚠️ Faylni o'chirishda xatolik:", err.message);
-      }
+    if (banner.public_id) {
+      await cloudinary.uploader.destroy(banner.public_id);
     }
 
     await bannerModel.findByIdAndDelete(id);
 
-    res.status(200).json({ message: "🗑️ Banner muvaffaqiyatli o'chirildi" });
+    res.status(200).json({ message: "Banner muvaffaqiyatli o'chirildi" });
   } catch (e) {
     res.status(500).json({ message: "Server xatosi", error: e.message });
   }

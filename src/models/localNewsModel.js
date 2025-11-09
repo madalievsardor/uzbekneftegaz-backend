@@ -12,7 +12,12 @@ const localNewsSchema = new mongoose.Schema(
       ru: { type: String },
       oz: { type: String },
     },
-    images: { type: [String] }, // bir nechta rasm
+    images: [
+      {
+        url: { type: String, required: true },
+        public_id: { type: String, required: true }
+      }
+    ], // bir nechta rasm
   },
   { timestamps: true }
 );

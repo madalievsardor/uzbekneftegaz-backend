@@ -1,9 +1,8 @@
 const News = require("../models/newsModel");
 const mongoose = require("mongoose");
-const path = require("path");
+const cloudinary = require("../config/cloudinary");
 const fs = require("fs");
 
-// 📰 YANGILIK YARATISH
 exports.create = async (req, res) => {
   try {
     const { title_uz, title_ru, title_oz, desc_uz, desc_ru, desc_oz } = req.body;
@@ -14,7 +13,17 @@ exports.create = async (req, res) => {
 
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = req.files.map((file) => `${file.filename}`);
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: "news",
+          use_filename: true,
+          unique_filename: true,
+        });
+        images.push({ url: result.secure_url, public_id: result.public_id });
+
+        // Lokal faylni o'chirish
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      }
     }
 
     const news = new News({
@@ -24,15 +33,92 @@ exports.create = async (req, res) => {
     });
 
     await news.save();
-
-    res.status(201).json({ message: "Yangilik muvaffaqiyatli yaratildi ✅", news });
+    res.status(201).json({ message: "Yangilik muvaffaqiyatli yaratildi", news });
   } catch (error) {
-    console.error("❌ Xatolik (create):", error);
+    console.error("Xatolik ", error);
     res.status(500).json({ message: "Serverda xatolik", error: error.message });
   }
 };
 
-// 🧾 BARCHA YANGILIKLARNI O‘QISH
+// 🟢 Yangilikni yangilash (Cloudinary)
+exports.update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title_uz, title_ru, title_oz, desc_uz, desc_ru, desc_oz } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Noto‘g‘ri ID formati!" });
+    }
+
+    const news = await News.findById(id);
+    if (!news) return res.status(404).json({ message: "Yangilik topilmadi!" });
+
+    // 🔹 Yangi fayllar Cloudinary'ga yuklash
+    let updatedImages = [...(news.images || [])];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: "news",
+          use_filename: true,
+          unique_filename: true,
+        });
+        updatedImages.push({ url: result.secure_url, public_id: result.public_id });
+
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      }
+    }
+
+    news.title.uz = title_uz || news.title.uz;
+    news.title.ru = title_ru || news.title.ru;
+    news.title.oz = title_oz || news.title.oz;
+
+    news.description.uz = desc_uz || news.description.uz;
+    news.description.ru = desc_ru || news.description.ru;
+    news.description.oz = desc_oz || news.description.oz;
+
+    news.images = updatedImages;
+
+    await news.save();
+    res.status(200).json({ message: "Yangilik muvaffaqiyatli yangilandi", news });
+  } catch (error) {
+    console.error("Xatolik:", error);
+    res.status(500).json({ message: "Serverda xatolik", error: error.message });
+  }
+};
+
+// 🟢 Yangilikni o'chirish (Cloudinary)
+exports.remove = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Noto‘g‘ri ID formati!" });
+    }
+
+    const news = await News.findById(id);
+    if (!news) return res.status(404).json({ message: "Yangilik topilmadi!" });
+
+    // 🔹 Cloudinary'dan rasmlarni o'chirish
+    if (news.images && news.images.length > 0) {
+      for (const img of news.images) {
+        if (img.public_id) {
+          try {
+            await cloudinary.uploader.destroy(img.public_id);
+          } catch (err) {
+            console.warn("Cloudinary rasmni o'chirishda xatolik:", err.message);
+          }
+        }
+      }
+    }
+
+    await News.findByIdAndDelete(id);
+    res.status(200).json({ message: "Yangilik muvaffaqiyatli o‘chirildi" });
+  } catch (error) {
+    console.error("Xatolik", error);
+    res.status(500).json({ message: "Serverda xatolik", error: error.message });
+  }
+};
+
 exports.getAll = async (req, res) => {
   try {
     const news = await News.find().sort({ createdAt: -1 });
@@ -43,7 +129,6 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// 🔍 ID ORQALI BITTA YANGILIK
 exports.getById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -61,76 +146,3 @@ exports.getById = async (req, res) => {
   }
 };
 
-// ✏️ YANGILIKNI TAHRIRL
-// ✏️ YANGILIKNI TAHRIRLASH
-exports.update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title_uz, title_ru, title_oz, desc_uz, desc_ru, desc_oz } = req.body;
-
-    // ID formati tekshiruvi
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Noto‘g‘ri ID formati!" });
-    }
-
-    const news = await News.findById(id);
-    if (!news) return res.status(404).json({ message: "Yangilik topilmadi!" });
-
-    // Yangi rasm bo‘lsa — qo‘shamiz
-    let updatedImages = [...(news.images || [])];
-    if (req.files && req.files.length > 0) {
-      const newImages = req.files.map((file) => `uploads/news/${file.filename}`);
-      updatedImages = [...updatedImages, ...newImages];
-    }
-
-    // Ma’lumotlarni yangilash
-    news.title.uz = title_uz || news.title.uz;
-    news.title.ru = title_ru || news.title.ru;
-    news.title.oz = title_oz || news.title.oz;
-
-    news.description.uz = desc_uz || news.description.uz;
-    news.description.ru = desc_ru || news.description.ru;
-    news.description.oz = desc_oz || news.description.oz;
-
-    news.images = updatedImages;
-
-    await news.save();
-
-    res.status(200).json({ message: "Yangilik muvaffaqiyatli yangilandi ✅", news });
-  } catch (error) {
-    console.error("❌ Xatolik (update):", error);
-    res.status(500).json({ message: "Serverda xatolik", error: error.message });
-  }
-};
-
-// 🗑️ YANGILIKNI O‘CHIRISH
-exports.remove = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // ID formati tekshiriladi
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Noto‘g‘ri ID formati!" });
-    }
-
-    const news = await News.findById(id);
-    if (!news) return res.status(404).json({ message: "Yangilik topilmadi!" });
-
-    // Rasmlarni fayl tizimidan o‘chirish
-    if (news.images && news.images.length > 0) {
-      news.images.forEach((imgPath) => {
-        const filePath = path.join(__dirname, "../", imgPath);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      });
-    }
-
-    await News.findByIdAndDelete(id);
-
-    res.status(200).json({ message: "Yangilik muvaffaqiyatli o‘chirildi ✅" });
-  } catch (error) {
-    console.error("❌ Xatolik (remove):", error);
-    res.status(500).json({ message: "Serverda xatolik", error: error.message });
-  }
-};
