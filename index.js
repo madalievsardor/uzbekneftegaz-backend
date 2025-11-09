@@ -24,6 +24,13 @@ const genderRoutes = require("./src/routes/genderRoutes");
 const connectDB = require("./src/config/db");
 const { swaggerUi, swaggerSpec } = require("./src/config/swagger");
 
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
 // DB
 connectDB();
 
