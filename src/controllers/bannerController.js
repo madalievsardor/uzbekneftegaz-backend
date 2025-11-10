@@ -5,7 +5,8 @@ const mongoose = require("mongoose")
 const cloudinary = require("../config/cloudinary");
 // 🟢 Banner yaratish
 exports.create = async (req, res) => {
-  console.log("reqFile",req.file)
+  console.log("reqFile", req.file);
+
   try {
     if (!req.file) {
       return res.status(400).json({ message: "Fayl yuklanmadi" });
@@ -13,15 +14,13 @@ exports.create = async (req, res) => {
 
     const { title_uz, title_ru, title_oz, desc_uz, desc_ru, desc_oz } = req.body;
 
-    if (!title_uz) {
-      return res
-        .status(400)
-        .json({ message: "Sarlavha (Uz) majburiy maydon" });
+    if (!title_uz?.trim()) {
+      return res.status(400).json({ message: "Sarlavha (Uz) majburiy maydon" });
     }
 
     const maxLength = 300;
     if (
-      (title_uz && title_uz.length > maxLength) ||
+      title_uz.length > maxLength ||
       (title_ru && title_ru.length > maxLength) ||
       (title_oz && title_oz.length > maxLength)
     ) {
@@ -30,35 +29,38 @@ exports.create = async (req, res) => {
       });
     }
 
-    const mediaType = req.file.mimetype.startsWith("image")
-      ? "image"
-      : "video";
+    const mediaType = req.file.mimetype.startsWith("image") ? "image" : "video";
 
     const newBanner = new bannerModel({
-      file: req.file.path, 
-      public_id: req.file.public_id ||  req.file.filename, 
+      file: req.file.path,
+      public_id: req.file.filename || req.file.public_id, // TO‘G‘RI!
       title: {
         uz: title_uz,
-        ru: title_ru,
-        oz: title_oz,
+        ru: title_ru || "",
+        oz: title_oz || "",
       },
       description: {
-        uz: desc_uz,
-        ru: desc_ru,
-        oz: desc_oz,
+        uz: desc_uz || "",
+        ru: desc_ru || "",
+        oz: desc_oz || "",
       },
       mediaType,
     });
 
-    await newBanner.save();
+    const savedBanner = await newBanner.save();
+
+    console.log("BANNER SAQLANDI:", savedBanner._id);
 
     res.status(201).json({
       message: "Ma'lumot muvaffaqiyatli joylandi!",
-      banner: newBanner,
+      banner: savedBanner,
     });
   } catch (e) {
     console.error("Banner yaratishda xato:", e);
-    res.status(500).json({ message: "Server xatosi", error: e.message });
+    res.status(500).json({ 
+      message: "Server xatosi", 
+      error: e.message 
+    });
   }
 };
 
