@@ -64,6 +64,7 @@ const {
  *         description: Server xatosi
  */
 router.post("/upload", verifyToken, (req, res, next) => {
+  console.log("req.file", req.file)
   upload.single("file")(req, res, (err) => {
     if(err) return res.status(400).json({ message: err.message });
     next(); // create controller chaqiriladi

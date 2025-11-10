@@ -36,7 +36,7 @@ exports.create = async (req, res) => {
 
     const newBanner = new bannerModel({
       file: req.file.path, 
-      public_id: req.file.filename, 
+      public_id: req.file.public_id ||  req.file.filename, 
       title: {
         uz: title_uz,
         ru: title_ru,
