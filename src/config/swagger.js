@@ -2,7 +2,9 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
 const LOCAL_URL = `http://localhost:${process.env.PORT || 8000}/api`;
-const PROD_URL = `${process.env.RENDER_EXTERNAL_URL || LOCAL_URL}/api`;
+const PROD_BASE = process.env.RENDER_EXTERNAL_URL?.replace(/\/$/, '') || LOCAL_URL;
+const PROD_URL = `${PROD_BASE}/api`;
+
 
 const options = {
   definition: {
