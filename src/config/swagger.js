@@ -2,12 +2,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
 const LOCAL_URL = `http://localhost:${process.env.PORT || 8000}/api`;
-
-// 🔹 Production serverlar: Render va Railway
-const PROD_URLS = [
-  process.env.RENDER_EXTERNAL_URL ? `${process.env.RENDER_EXTERNAL_URL}/api` : null,
-  "https://uzbekneftegaz-backend-production.up.railway.app/api"
-].filter(Boolean); // null bo‘lganlarini olib tashlaymiz
+const PROD_URL = `${process.env.RENDER_EXTERNAL_URL || LOCAL_URL}/api`;
 
 const options = {
   definition: {
@@ -22,10 +17,10 @@ const options = {
         url: LOCAL_URL,
         description: "💻 Local server (localhost)",
       },
-      ...PROD_URLS.map(url => ({
-        url,
-        description: "🌐 Production server"
-      }))
+      {
+        url: PROD_URL,
+        description: "🌐 Production server (Render)",
+      }
     ],
     components: {
       securitySchemes: {

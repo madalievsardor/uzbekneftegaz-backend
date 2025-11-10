@@ -5,6 +5,7 @@ const mongoose = require("mongoose")
 const cloudinary = require("../config/cloudinary");
 // 🟢 Banner yaratish
 exports.create = async (req, res) => {
+  console.log("reqFile",req.file)
   try {
     if (!req.file) {
       return res.status(400).json({ message: "Fayl yuklanmadi" });
