@@ -151,7 +151,7 @@ exports.update = async (req, res) => {
       data: banner,
     });
   } catch (error) {
-    console.error("❌ Yangilash xatosi:", error);
+    console.error("❌ Yangilash xatosi:", error.message);
     res.status(500).json({
       message: "❌ Yangilashda xatolik yuz berdi",
       error: error.message,

@@ -130,22 +130,22 @@ router.get("/:id", getById);
  *               file:
  *                 type: string
  *                 format: binary
- *               title[uz]:
+ *               title_uz:
  *                 type: string
  *                 example: "Yangilangan banner"
- *               title[ru]:
+ *               title_ru:
  *                 type: string
  *                 example: "Обновленный баннер"
- *               title[oz]:
+ *               title_oz:
  *                 type: string
  *                 example: "Янгиланган баннер"
- *               description[uz]:
+ *               description_uz:
  *                 type: string
  *                 example: "Yangi ma’lumotlar bilan banner"
- *               description[ru]:
+ *               description_ru:
  *                 type: string
  *                 example: "Баннер с новой информацией"
- *               description[oz]:
+ *               description_oz:
  *                 type: string
  *                 example: "Янги маълумотлар билан баннер"
  *     responses:
